@@ -1,0 +1,57 @@
+﻿<Window x:Class="MiniLaunch.WPFApp.NewAccountWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MiniLaunch.WPFApp"
+        mc:Ignorable="d"
+        Title="Add Account - DDO MiniLaunch" Height="150" Width="280"
+        ResizeMode="NoResize">
+    <Border BorderThickness="3" BorderBrush="Gray">
+        <Grid Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2" />
+                <RowDefinition Height="28" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="28" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock Text="Username:" FontSize="15" VerticalAlignment="Center"></TextBlock>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <TextBox x:Name="UsernameTextBox" FontSize="15" Height="24" VerticalAlignment="Center"></TextBox>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock Text="Password:" FontSize="15" VerticalAlignment="Center"></TextBlock>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <PasswordBox x:Name="PasswordTextBox" FontSize="15" Height="24" VerticalAlignment="Center"></PasswordBox>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1">
+                    <Button x:Name="AddNewAccount" Click="AddNewAccount_Click" FontSize="14">Add Account</Button>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

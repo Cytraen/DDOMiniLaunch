@@ -1,0 +1,31 @@
+﻿<Window x:Class="MiniLaunch.WPFApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MiniLaunch.WPFApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="640"
+        ResizeMode="NoResize">
+    <TabControl Margin="1">
+        <TabItem x:Name="AccountsTab" Header="Accounts">
+            <Grid Margin="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="2.5" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Button x:Name="AddAccountButton" Grid.Row="0" FontSize="14" Content="Add Account" Click="AddAccountButton_Click" />
+                    <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="11" SelectionMode="Single" />
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="SettingsTab" Header="Settings" IsEnabled="False">
+        </TabItem>
+    </TabControl>
+</Window>
