@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using MiniLaunch.Common;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace MiniLaunch.WPFApp
 {
@@ -7,12 +9,31 @@ namespace MiniLaunch.WPFApp
         public MainWindow()
         {
             InitializeComponent();
+            PopulateAccountList().GetAwaiter().GetResult();
         }
 
-        private void AddAccountButton_Click(object sender, RoutedEventArgs e)
+        private async void AddAccountButton_Click(object sender, RoutedEventArgs e)
         {
             var newAccountWindow = new NewAccountWindow();
-            newAccountWindow.Show();
+            newAccountWindow.ShowDialog();
+            await PopulateAccountList();
+        }
+
+        private async Task PopulateAccountList()
+        {
+            var subs = await Database.GetSubscriptions();
+
+            AccountListBox.Items.Clear();
+
+            foreach (var (username, subPairs) in subs)
+            {
+                AccountListBox.Items.Add(username);
+
+                foreach (var subPair in subPairs)
+                {
+                    AccountListBox.Items.Add("    " + subPair.Item2);
+                }
+            }
         }
     }
 }

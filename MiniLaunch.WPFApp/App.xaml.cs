@@ -27,6 +27,8 @@ namespace MiniLaunch.WPFApp
             SelectGameFolder(Configuration);
             await SaveConfig(Configuration);
 
+            await LoadDatabase();
+
             var mainWindow = new MainWindow();
 
             startupWindow.Close();
@@ -69,6 +71,15 @@ namespace MiniLaunch.WPFApp
                 folderPicker.ShowDialog();
                 config.GameDirectory = folderPicker.FileName;
             }
+        }
+
+        private Task LoadDatabase()
+        {
+            if (!File.Exists(Config.DatabaseFilePath))
+            {
+                return Database.CreateDatabase();
+            }
+            return Task.CompletedTask;
         }
     }
 }
