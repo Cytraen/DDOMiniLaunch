@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<UseWPF>true</UseWPF>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<Authors>ashakoor</Authors>
+		<Copyright>Copyright © 2021 ashakoor</Copyright>
+		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/ashakoor/DDO-MiniLaunch</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Version>0.1.0</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MiniLaunch.Common\MiniLaunch.Common.csproj" />
+	</ItemGroup>
+</Project>
