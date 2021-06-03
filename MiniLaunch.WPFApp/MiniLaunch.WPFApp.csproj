@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon>../icon.ico</ApplicationIcon>
+		<AssemblyName>DDOMiniLaunch</AssemblyName>
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<Authors>ashakoor</Authors>
 		<Copyright>Copyright © 2021 ashakoor</Copyright>
