@@ -5,42 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MiniLaunch.WPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="640"
+        Title="MainWindow" Height="450" Width="300"
         ResizeMode="NoResize">
     <TabControl Margin="1">
         <TabItem x:Name="AccountsTab" Header="Accounts">
             <Grid Margin="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="240" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="25" />
-                        <RowDefinition Height="2.5" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Button x:Name="AddAccountButton" Grid.Row="0" FontSize="14" Content="Add Account" Click="AddAccountButton_Click" />
-                    <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="11" SelectionMode="Single" SelectionChanged="AccountListBox_SelectionChanged">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} - {1}">
-                                            <Binding Path="Item1" />
-                                            <Binding Path="Item2" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem x:Name="AccountListBoxContextDelete" Header="Delete" IsEnabled="False" Click="AccountListBoxContextDelete_Click" />
-                            </ContextMenu>
-                        </ListBox.ContextMenu>
-                    </ListBox>
-                </Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="2.5" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="2.5" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <Button x:Name="AddAccountButton" Grid.Row="0" FontSize="14" Content="Add Account" Click="AddAccountButton_Click" />
+                <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="11" SelectionMode="Single" SelectionChanged="AccountListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} - {1}">
+                                        <Binding Path="Item1" />
+                                        <Binding Path="Item2" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem x:Name="AccountListBoxContextDelete" Header="Delete" IsEnabled="False" Click="AccountListBoxContextDelete_Click" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+                <Button x:Name="LaunchButton" Grid.Row="4" Content="Launch" Click="LaunchButton_Click" />
             </Grid>
         </TabItem>
         <TabItem x:Name="SettingsTab" Header="Settings" IsEnabled="False">

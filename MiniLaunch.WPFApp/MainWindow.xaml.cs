@@ -43,5 +43,10 @@ namespace MiniLaunch.WPFApp
                 AccountListBoxContextDelete.IsEnabled = true;
             }
         }
+
+        private void LaunchButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
