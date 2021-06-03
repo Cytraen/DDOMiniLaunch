@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<ApplicationIcon>../icon.ico</ApplicationIcon>
 		<TargetFramework>net5.0</TargetFramework>
 		<Authors>ashakoor</Authors>
 		<Copyright>Copyright © 2021 ashakoor</Copyright>

@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<UseWPF>true</UseWPF>
+		<ApplicationIcon>../icon.ico</ApplicationIcon>
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<Authors>ashakoor</Authors>
 		<Copyright>Copyright © 2021 ashakoor</Copyright>
@@ -11,7 +12,7 @@
 		<Version>0.1.0</Version>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
+		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>

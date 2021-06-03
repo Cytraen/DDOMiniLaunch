@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MiniLaunch.WPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="300"
+        Title="DDO MiniLaunch" Height="450" Width="300"
         ResizeMode="NoResize">
     <TabControl Margin="1">
         <TabItem x:Name="AccountsTab" Header="Accounts">
