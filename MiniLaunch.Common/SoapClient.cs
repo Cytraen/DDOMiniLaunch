@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -40,7 +41,6 @@ namespace MiniLaunch.Common
 
         private T DeserializeResponse<T>(string responseContent)
         {
-            //const string xmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";    .Replace(xmlHeader, "")
             const string soapHeader = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><soap:Body>";
             const string soapFooter = "</soap:Body></soap:Envelope>";
 
@@ -60,7 +60,7 @@ namespace MiniLaunch.Common
 
         public async Task<LoginAccountResponse> LoginAccount(string username, string password)
         {
-            var requestUri = "/GLS.AuthServer/Service.asmx";
+            const string requestUri = "/GLS.AuthServer/Service.asmx";
             var requestBody = "<LoginAccount xmlns=\"http://www.turbine.com/SE/GLS\"><username>" + username + "</username><password>" + password + "</password></LoginAccount>";
 
             var response = await MakeSoapRequest(requestUri, requestBody, HttpMethod.Post);
@@ -71,7 +71,7 @@ namespace MiniLaunch.Common
 
         public async Task<GetDatacentersResponse> GetDatacenters(string game)
         {
-            var requestUri = "/GLS.DataCenterServer/Service.asmx";
+            const string requestUri = "/GLS.DataCenterServer/Service.asmx";
             var requestBody = "<GetDatacenters xmlns=\"http://www.turbine.com/SE/GLS\"><game>" + game + "</game></GetDatacenters>";
 
             var response = await MakeSoapRequest(requestUri, requestBody, HttpMethod.Post);
@@ -80,9 +80,35 @@ namespace MiniLaunch.Common
             return DeserializeResponse<GetDatacentersResponse>(responseString);
         }
 
+        public async Task<Status> GetDatacenterStatus(string serverIp)
+        {
+            const string requestUri = "/GLS.DataCenterServer/StatusServer.aspx?s=";
+
+            var response = await MakeSoapRequest(requestUri + serverIp, null, HttpMethod.Get);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            return DeserializeResponse<Status>(responseString);
+        }
+
+        public async Task<Result> QueueTakeANumber(string subscription, string ticket, string queueUrl)
+        {
+            const string requestUri = "/GLS.AuthServer/LoginQueue.aspx";
+            var requestBody = "command=TakeANumber&subscription=" + subscription + "&ticket=" + HttpUtility.UrlEncode(ticket) + "&ticket_type=GLS&queue_url=" + queueUrl;
+
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri(requestUri, UriKind.Relative))
+            {
+                Content = new StringContent(requestBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+
+            var response = await _httpClient.SendAsync(request);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            return DeserializeResponse<Result>(responseString);
+        }
+
         public async Task<Dictionary<string, string>> GetLauncherConfig()
         {
-            var requestUri = "/launcher/ddo/dndlauncher.server.config.xml";
+            const string requestUri = "/launcher/ddo/dndlauncher.server.config.xml";
 
             var response = await MakeSoapRequest(requestUri, null, HttpMethod.Get);
             var responseString = await response.Content.ReadAsStringAsync();

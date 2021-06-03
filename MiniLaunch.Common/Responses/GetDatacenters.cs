@@ -36,7 +36,7 @@
     {
         private string nameField;
 
-        private GetDatacentersResponseGetDatacentersResultDatacenterWorlds worldsField;
+        private GetDatacentersResponseGetDatacentersResultDatacenterWorld[] worldsField;
 
         private string authServerField;
 
@@ -50,7 +50,8 @@
             set => nameField = value;
         }
 
-        public GetDatacentersResponseGetDatacentersResultDatacenterWorlds Worlds
+        [System.Xml.Serialization.XmlArrayItem("World", IsNullable = false)]
+        public GetDatacentersResponseGetDatacentersResultDatacenterWorld[] Worlds
         {
             get => worldsField;
             set => worldsField = value;
@@ -78,21 +79,7 @@
     [System.Serializable()]
     [System.ComponentModel.DesignerCategory("code")]
     [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://www.turbine.com/SE/GLS")]
-    public partial class GetDatacentersResponseGetDatacentersResultDatacenterWorlds
-    {
-        private GetDatacentersResponseGetDatacentersResultDatacenterWorldsWorld worldField;
-
-        public GetDatacentersResponseGetDatacentersResultDatacenterWorldsWorld World
-        {
-            get => worldField;
-            set => worldField = value;
-        }
-    }
-
-    [System.Serializable()]
-    [System.ComponentModel.DesignerCategory("code")]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://www.turbine.com/SE/GLS")]
-    public partial class GetDatacentersResponseGetDatacentersResultDatacenterWorldsWorld
+    public partial class GetDatacentersResponseGetDatacentersResultDatacenterWorld
     {
         private string nameField;
 
@@ -104,7 +91,7 @@
 
         private byte orderField;
 
-        private object languageField;
+        private string languageField;
 
         public string Name
         {
@@ -136,7 +123,7 @@
             set => orderField = value;
         }
 
-        public object Language
+        public string Language
         {
             get => languageField;
             set => languageField = value;

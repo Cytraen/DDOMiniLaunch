@@ -34,7 +34,7 @@ namespace MiniLaunch.WPFApp
             mainWindow.Show();
         }
 
-        private static async Task<Config> LoadConfig()
+        internal static async Task<Config> LoadConfig()
         {
             var config = new Config();
 
@@ -51,7 +51,7 @@ namespace MiniLaunch.WPFApp
             return config;
         }
 
-        private static Task SaveConfig(Config config)
+        internal static Task SaveConfig(Config config)
         {
             var configJson = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
             return File.WriteAllTextAsync(Config.SettingsFilePath, configJson);
@@ -72,7 +72,7 @@ namespace MiniLaunch.WPFApp
             }
         }
 
-        private Task LoadDatabase()
+        internal Task LoadDatabase()
         {
             if (!File.Exists(Config.DatabaseFilePath))
             {
