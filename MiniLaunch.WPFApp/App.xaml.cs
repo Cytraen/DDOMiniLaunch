@@ -30,7 +30,6 @@ namespace MiniLaunch.WPFApp
             await LoadDatabase();
 
             var mainWindow = new MainWindow();
-
             startupWindow.Close();
             mainWindow.Show();
         }

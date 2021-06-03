@@ -51,7 +51,9 @@ namespace MiniLaunch.Common
 
         public static Task AddAccount(string username, string password, string ticket)
         {
-            var addAccount = @"INSERT INTO Accounts VALUES ($username, $password, $ticket)";
+            var addAccount =
+@"INSERT INTO Accounts VALUES ($username, $password, $ticket)
+    ON CONFLICT (Username) DO UPDATE SET Password=$password, Ticket=$ticket";
 
             var addAccountCmd = new SqliteCommand(addAccount, DbConnection);
             addAccountCmd.Parameters.AddWithValue("$username", username);
@@ -62,7 +64,9 @@ namespace MiniLaunch.Common
 
         public static Task AddSubscription(Subscription sub, string username)
         {
-            var addSubscription = @"INSERT INTO Subscriptions VALUES ($name, $username, $game, $description, $status)";
+            var addSubscription =
+@"INSERT INTO Subscriptions VALUES ($name, $username, $game, $description, $status)
+    ON CONFLICT (Name) DO UPDATE SET Description=$description, Status=$status";
 
             var addSubscriptionCmd = new SqliteCommand(addSubscription, DbConnection);
             addSubscriptionCmd.Parameters.AddWithValue("$username", username);
@@ -73,14 +77,43 @@ namespace MiniLaunch.Common
             return addSubscriptionCmd.ExecuteNonQueryAsync();
         }
 
-        public static async Task<Dictionary<string, List<Tuple<string, string>>>> GetSubscriptions()
+        public static async Task DeleteSubscription(string subName, string username)
+        {
+            var deleteSubscription = @"DELETE FROM Subscriptions WHERE Name = $name;";
+
+            var deleteSubscriptionCmd = new SqliteCommand(deleteSubscription, DbConnection);
+            deleteSubscriptionCmd.Parameters.AddWithValue("$name", subName);
+
+            await deleteSubscriptionCmd.ExecuteNonQueryAsync();
+
+            var readSubs = @"SELECT * FROM Subscriptions WHERE Username = $username";
+
+            var readSubsCmd = new SqliteCommand(readSubs, DbConnection);
+            readSubsCmd.Parameters.AddWithValue("$username", username);
+
+            var reader = await readSubsCmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                return;
+            }
+
+            var deleteAccount = @"DELETE FROM Accounts WHERE Username = $username";
+
+            var deleteAccountCmd = new SqliteCommand(deleteAccount, DbConnection);
+            deleteAccountCmd.Parameters.AddWithValue("$username", username);
+
+            await deleteAccountCmd.ExecuteNonQueryAsync();
+        }
+
+        public static async Task<List<Tuple<string, string, string>>> GetSubscriptions()
         {
             var getSubscriptions = @"SELECT Name, Username, Description FROM Subscriptions";
 
             var getSubscriptionsCmd = new SqliteCommand(getSubscriptions, DbConnection);
             var reader = await getSubscriptionsCmd.ExecuteReaderAsync();
 
-            var subscriptions = new Dictionary<string, List<Tuple<string, string>>>();
+            var subscriptions = new List<Tuple<string, string, string>>();
 
             while (await reader.ReadAsync())
             {
@@ -88,12 +121,7 @@ namespace MiniLaunch.Common
                 var username = reader[1].ToString();
                 var subDesc = reader[2].ToString();
 
-                if (!subscriptions.ContainsKey(username))
-                {
-                    subscriptions[username] = new List<Tuple<string, string>>();
-                }
-
-                subscriptions[username].Add(new(subId, subDesc));
+                subscriptions.Add(new(username, subDesc, subId));
             }
 
             return subscriptions;

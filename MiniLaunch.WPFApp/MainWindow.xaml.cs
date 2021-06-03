@@ -1,5 +1,5 @@
 ﻿using MiniLaunch.Common;
-using System.Threading.Tasks;
+using System;
 using System.Windows;
 
 namespace MiniLaunch.WPFApp
@@ -9,30 +9,38 @@ namespace MiniLaunch.WPFApp
         public MainWindow()
         {
             InitializeComponent();
-            PopulateAccountList().GetAwaiter().GetResult();
+
+            AccountListBox.ItemsSource = Database.GetSubscriptions().GetAwaiter().GetResult();
+
+            AccountListBox.Items.Refresh();
         }
 
-        private async void AddAccountButton_Click(object sender, RoutedEventArgs e)
+        private void AddAccountButton_Click(object sender, RoutedEventArgs e)
         {
             var newAccountWindow = new NewAccountWindow();
             newAccountWindow.ShowDialog();
-            await PopulateAccountList();
+            AccountListBox.ItemsSource = Database.GetSubscriptions().GetAwaiter().GetResult();
+            AccountListBox.Items.Refresh();
         }
 
-        private async Task PopulateAccountList()
+        private async void AccountListBoxContextDelete_Click(object sender, RoutedEventArgs e)
         {
-            var subs = await Database.GetSubscriptions();
+            var tuple = (Tuple<string, string, string>)AccountListBox.SelectedItem;
 
-            AccountListBox.Items.Clear();
+            await Database.DeleteSubscription(tuple.Item3, tuple.Item1);
+            AccountListBox.ItemsSource = Database.GetSubscriptions().GetAwaiter().GetResult();
+            AccountListBox.Items.Refresh();
+        }
 
-            foreach (var (username, subPairs) in subs)
+        private void AccountListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (AccountListBox.SelectedItem is null)
             {
-                AccountListBox.Items.Add(username);
-
-                foreach (var subPair in subPairs)
-                {
-                    AccountListBox.Items.Add("    " + subPair.Item2);
-                }
+                AccountListBoxContextDelete.IsEnabled = false;
+            }
+            else
+            {
+                AccountListBoxContextDelete.IsEnabled = true;
             }
         }
     }

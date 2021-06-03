@@ -21,7 +21,25 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Button x:Name="AddAccountButton" Grid.Row="0" FontSize="14" Content="Add Account" Click="AddAccountButton_Click" />
-                    <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="11" SelectionMode="Single" />
+                    <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="11" SelectionMode="Single" SelectionChanged="AccountListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} - {1}">
+                                            <Binding Path="Item1" />
+                                            <Binding Path="Item2" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="AccountListBoxContextDelete" Header="Delete" IsEnabled="False" Click="AccountListBoxContextDelete_Click" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
                 </Grid>
             </Grid>
         </TabItem>
