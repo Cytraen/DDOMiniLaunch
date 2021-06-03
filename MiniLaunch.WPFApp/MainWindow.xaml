@@ -16,6 +16,8 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="2.5" />
                     <RowDefinition Height="25" />
+                    <RowDefinition Height="2.5" />
+                    <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
                 <Button x:Name="AddAccountButton" Grid.Row="0" FontSize="14" Content="Add Account" Click="AddAccountButton_Click" />
                 <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="11" SelectionMode="Single" SelectionChanged="AccountListBox_SelectionChanged">
@@ -37,7 +39,8 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
-                <Button x:Name="LaunchButton" Grid.Row="4" Content="Launch" Click="LaunchButton_Click" />
+                <ComboBox x:Name="ServerDropdown" Grid.Row="4" />
+                <Button x:Name="LaunchButton" Grid.Row="6" Content="Launch" Click="LaunchButton_Click" />
             </Grid>
         </TabItem>
         <TabItem x:Name="SettingsTab" Header="Settings" IsEnabled="False">
