@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Windows;
 
 namespace MiniLaunch.WPFApp
@@ -16,6 +15,13 @@ namespace MiniLaunch.WPFApp
 
             AccountListBox.ItemsSource = Database.GetSubscriptions().GetAwaiter().GetResult();
             AccountListBox.Items.Refresh();
+
+            if (AccountListBox.Items.Count == 1)
+            {
+                AccountListBox.SelectedItem = AccountListBox.Items[0];
+                AccountListBoxContextDelete.IsEnabled = true;
+                LaunchButton.IsEnabled = true;
+            }
 
             ServerDropdown.ItemsSource = Enum.GetValues(typeof(Servers));
             ServerDropdown.SelectedItem = App.Configuration.LastPlayedServer;
@@ -43,10 +49,12 @@ namespace MiniLaunch.WPFApp
             if (AccountListBox.SelectedItem is null)
             {
                 AccountListBoxContextDelete.IsEnabled = false;
+                LaunchButton.IsEnabled = false;
             }
             else
             {
                 AccountListBoxContextDelete.IsEnabled = true;
+                LaunchButton.IsEnabled = false;
             }
         }
 
@@ -57,8 +65,6 @@ namespace MiniLaunch.WPFApp
             var username = account.Item1;
             var password = await Database.GetPassword(username);
             var subscriptionId = account.Item3;
-
-            var settings = JsonSerializer.Deserialize<Config>(await File.ReadAllTextAsync(Config.SettingsFilePath));
 
             var loginResponse = await App.SoapClient.LoginAccount(username, password);
             var ticket = loginResponse.LoginAccountResult.Ticket;
@@ -85,24 +91,21 @@ namespace MiniLaunch.WPFApp
 
             if (App.Configuration.Use64Bit)
             {
-                startInfo = new ProcessStartInfo(Path.Combine(settings.GameDirectory, "x64", "dndclient64.exe"), args);
+                startInfo = new ProcessStartInfo(Path.Combine(App.Configuration.GameDirectory, "x64", "dndclient64.exe"), args);
             }
             else
             {
-                startInfo = new ProcessStartInfo(Path.Combine(settings.GameDirectory, "dndclient.exe"), args);
+                startInfo = new ProcessStartInfo(Path.Combine(App.Configuration.GameDirectory, "dndclient.exe"), args);
             }
 
             await App.SoapClient.QueueTakeANumber(subscriptionId, ticket, worldStatus.queueurls.Split(';').First());
 
-            startInfo.WorkingDirectory = settings.GameDirectory;
+            startInfo.WorkingDirectory = App.Configuration.GameDirectory;
 
             Process.Start(startInfo);
 
-            if (Enum.TryParse(ServerDropdown.Text, out Servers playedServer))
-            {
-                App.Configuration.LastPlayedServer = playedServer;
-                await App.SaveConfig(settings);
-            }
+            App.Configuration.LastPlayedServer = (Servers)ServerDropdown.SelectedItem;
+            await App.SaveConfig(App.Configuration);
         }
     }
 }
