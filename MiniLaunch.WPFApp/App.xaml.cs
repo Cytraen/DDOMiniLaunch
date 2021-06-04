@@ -28,7 +28,7 @@ namespace MiniLaunch.WPFApp
             SelectGameFolder(Configuration);
             await SaveConfig(Configuration);
 
-            await LoadDatabase();
+            await CreateDatabase();
 
             var mainWindow = new MainWindow();
             startupWindow.Close();
@@ -85,11 +85,11 @@ namespace MiniLaunch.WPFApp
                     Environment.Exit(0);
                 }
 
-                config.GameDirectory = launcherFileDialog.FileName.Replace("\\" + launcherFileName, "", System.StringComparison.InvariantCultureIgnoreCase);
+                config.GameDirectory = launcherFileDialog.FileName.Replace("\\" + launcherFileName, "", StringComparison.InvariantCultureIgnoreCase);
             }
         }
 
-        internal Task LoadDatabase()
+        internal static Task CreateDatabase()
         {
             if (!File.Exists(Config.DatabaseFilePath))
             {
