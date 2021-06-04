@@ -12,9 +12,6 @@
 		<RepositoryType>git</RepositoryType>
 		<Version>0.1.1</Version>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\MiniLaunch.Common\MiniLaunch.Common.csproj" />

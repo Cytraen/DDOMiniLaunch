@@ -1,5 +1,6 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.Win32;
 using MiniLaunch.Common;
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -59,16 +60,32 @@ namespace MiniLaunch.WPFApp
 
         private static void SelectGameFolder(Config config)
         {
+            const string launcherFileName = "DNDLauncher.exe";
+
             while (true)
             {
-                if (File.Exists(Path.Combine(config.GameDirectory, "dndlauncher.exe")))
+                if (File.Exists(Path.Combine(config.GameDirectory, launcherFileName)))
                 {
                     return;
                 }
-                _ = MessageBox.Show("dndlauncher.exe was not found.\nPlease select your DDO installation directory.", "Can't find DDO installation directory");
-                var folderPicker = new CommonOpenFileDialog("Select DDO Installation Folder") { IsFolderPicker = true };
-                folderPicker.ShowDialog();
-                config.GameDirectory = folderPicker.FileName;
+
+                _ = MessageBox.Show(launcherFileName + " was not found.\nPlease select your DDO installation directory.", "Can't find DDO installation directory");
+
+                var launcherFileDialog = new OpenFileDialog
+                {
+                    Filter = "DDO Launcher|" + launcherFileName,
+                    Title = "Select DNDLauncher.exe in your DDO install folder"
+                };
+
+                var dialogResult = launcherFileDialog.ShowDialog();
+
+                if (!dialogResult.HasValue || !dialogResult.Value)
+                {
+                    _ = MessageBox.Show("DDOMiniLaunch is closing...");
+                    Environment.Exit(0);
+                }
+
+                config.GameDirectory = launcherFileDialog.FileName.Replace("\\" + launcherFileName, "", System.StringComparison.InvariantCultureIgnoreCase);
             }
         }
 
