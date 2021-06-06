@@ -48,5 +48,10 @@ namespace MiniLaunch.WPFApp
 
             Close();
         }
+
+        private void Window_LocationChanged(object sender, System.EventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
     }
 }

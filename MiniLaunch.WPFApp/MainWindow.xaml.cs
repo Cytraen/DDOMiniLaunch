@@ -134,5 +134,15 @@ namespace MiniLaunch.WPFApp
         {
             EnableLaunchButton();
         }
+
+        private void Window_LocationChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
     }
 }

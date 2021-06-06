@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MiniLaunch.WPFApp"
+        xmlns:settings="clr-namespace:MiniLaunch.WPFApp.Properties"
         mc:Ignorable="d"
         Title="Add Account - DDO MiniLaunch" Height="150" Width="280"
+        Top="{Binding NewTop, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
+        Left="{Binding NewLeft, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
+        LocationChanged="Window_LocationChanged"
         ResizeMode="NoResize">
     <Border BorderThickness="3" BorderBrush="Gray">
         <Grid Margin="2">
