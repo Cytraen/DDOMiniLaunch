@@ -74,7 +74,15 @@ namespace MiniLaunch.WPFApp
             if (File.Exists(Config.SettingsFilePath))
             {
                 var configText = await File.ReadAllTextAsync(Config.SettingsFilePath);
-                config = JsonSerializer.Deserialize<Config>(configText);
+
+                try
+                {
+                    config = JsonSerializer.Deserialize<Config>(configText);
+                }
+                catch (JsonException)
+                {
+                    // ignore
+                }
             }
             else
             {
