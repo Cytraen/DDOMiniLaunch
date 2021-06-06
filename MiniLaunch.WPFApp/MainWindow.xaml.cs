@@ -20,11 +20,17 @@ namespace MiniLaunch.WPFApp
             {
                 AccountListBox.SelectedItem = AccountListBox.Items[0];
                 AccountListBoxContextDelete.IsEnabled = true;
-                LaunchButton.IsEnabled = true;
             }
 
-            ServerDropdown.ItemsSource = Enum.GetValues(typeof(Servers));
-            ServerDropdown.SelectedItem = App.Configuration.LastPlayedServer;
+            ServerDropdown.ItemsSource = App.ServerInfo;
+
+            var selected = App.ServerInfo.Where(x => x.Name == App.Configuration.LastPlayedServer).ToList();
+
+            if (selected.Count == 1)
+            {
+                ServerDropdown.SelectedItem = selected[0];
+            }
+            EnableLaunchButton();
         }
 
         private void AddAccountButton_Click(object sender, RoutedEventArgs e)
@@ -44,17 +50,29 @@ namespace MiniLaunch.WPFApp
             AccountListBox.Items.Refresh();
         }
 
+        private void EnableLaunchButton()
+        {
+            if (AccountListBox.SelectedItem is not null && ServerDropdown.SelectedItem is not null)
+            {
+                LaunchButton.IsEnabled = true;
+            }
+            else
+            {
+                LaunchButton.IsEnabled = false;
+            }
+        }
+
         private void AccountListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            EnableLaunchButton();
+
             if (AccountListBox.SelectedItem is null)
             {
                 AccountListBoxContextDelete.IsEnabled = false;
-                LaunchButton.IsEnabled = false;
             }
             else
             {
                 AccountListBoxContextDelete.IsEnabled = true;
-                LaunchButton.IsEnabled = false;
             }
         }
 
@@ -69,23 +87,20 @@ namespace MiniLaunch.WPFApp
             var loginResponse = await App.SoapClient.LoginAccount(username, password);
             var ticket = loginResponse.LoginAccountResult.Ticket;
 
-            var launcherConfig = await App.SoapClient.GetLauncherConfig();
-            var datacenterInfo = await App.SoapClient.GetDatacenters("DDO");
+            var worldInfo = (ServerInfo)ServerDropdown.SelectedItem;
+            var worldStatus = await App.SoapClient.GetDatacenterStatus(worldInfo.ServerStatusUrl);
 
-            var worldInfo = datacenterInfo.GetDatacentersResult.Datacenter.Worlds.Single(x => x.Name == ServerDropdown.Text);
-            var worldStatus = await App.SoapClient.GetDatacenterStatus(worldInfo.StatusServerUrl.Split('=').Last());
-
-            var args = launcherConfig["GameClient.WIN32.ArgTemplate"];
+            var args = App.LauncherConfig["GameClient.WIN32.ArgTemplate"];
             args = args.Replace("{SUBSCRIPTION}", subscriptionId);
             args = args.Replace("{LOGIN}", worldStatus.loginservers.Split(';').First());
             args = args.Replace("{GLS}", ticket);
             args = args.Replace("{CHAT}", worldInfo.ChatServerUrl);
             args = args.Replace("{LANG}", "English");
-            args = args.Replace("{AUTHSERVERURL}", launcherConfig["GameClient.Arg.authserverurl"]);
-            args = args.Replace("{GLSTICKETLIFETIME}", launcherConfig["GameClient.Arg.glsticketlifetime"]);
-            args = args.Replace("{SUPPORTURL}", launcherConfig["GameClient.Arg.supporturl"]);
-            args = args.Replace("{BUGURL}", launcherConfig["GameClient.Arg.bugurl"]);
-            args = args.Replace("{SUPPORTSERVICEURL}", launcherConfig["GameClient.Arg.supportserviceurl"]);
+            args = args.Replace("{AUTHSERVERURL}", App.LauncherConfig["GameClient.Arg.authserverurl"]);
+            args = args.Replace("{GLSTICKETLIFETIME}", App.LauncherConfig["GameClient.Arg.glsticketlifetime"]);
+            args = args.Replace("{SUPPORTURL}", App.LauncherConfig["GameClient.Arg.supporturl"]);
+            args = args.Replace("{BUGURL}", App.LauncherConfig["GameClient.Arg.bugurl"]);
+            args = args.Replace("{SUPPORTSERVICEURL}", App.LauncherConfig["GameClient.Arg.supportserviceurl"]);
 
             ProcessStartInfo startInfo;
 
@@ -104,8 +119,13 @@ namespace MiniLaunch.WPFApp
 
             Process.Start(startInfo);
 
-            App.Configuration.LastPlayedServer = (Servers)ServerDropdown.SelectedItem;
+            App.Configuration.LastPlayedServer = ((ServerInfo)ServerDropdown.SelectedItem).Name;
             await App.SaveConfig(App.Configuration);
+        }
+
+        private void ServerDropdown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            EnableLaunchButton();
         }
     }
 }

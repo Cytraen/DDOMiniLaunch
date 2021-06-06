@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using MiniLaunch.Common;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,7 +14,11 @@ namespace MiniLaunch.WPFApp
     {
         public static SoapClient SoapClient { get; set; }
 
+        public static List<ServerInfo> ServerInfo { get; set; }
+
         public static Config Configuration { get; set; }
+
+        public static Dictionary<string, string> LauncherConfig { get; set; }
 
         public App()
         {
@@ -24,15 +30,41 @@ namespace MiniLaunch.WPFApp
             var startupWindow = new StartupWindow();
             startupWindow.Show();
 
+            var updateServerInfoTask = UpdateServerInfo();
+            var updateLauncherConfigTask = UpdateLauncherConfig();
+
             Configuration = await LoadConfig();
             SelectGameFolder(Configuration);
             await SaveConfig(Configuration);
-
             await CreateDatabase();
+
+            await updateServerInfoTask;
+            await updateLauncherConfigTask;
 
             var mainWindow = new MainWindow();
             startupWindow.Close();
             mainWindow.Show();
+        }
+
+        internal static async Task UpdateServerInfo()
+        {
+            var servers = await SoapClient.GetDatacenters("DDO");
+
+            var serverList = servers.GetDatacentersResult.Datacenter.Worlds.Select(
+                x => new ServerInfo
+                {
+                    ChatServerUrl = x.ChatServerUrl,
+                    Name = x.Name,
+                    Order = x.Order,
+                    ServerStatusUrl = x.StatusServerUrl.Split('=').Last()
+                }).ToList();
+
+            ServerInfo = serverList.OrderBy(x => x.Order).ToList();
+        }
+
+        internal static async Task UpdateLauncherConfig()
+        {
+            LauncherConfig = await SoapClient.GetLauncherConfig();
         }
 
         internal static async Task<Config> LoadConfig()

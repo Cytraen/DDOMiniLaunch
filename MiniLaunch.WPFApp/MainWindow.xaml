@@ -43,7 +43,7 @@
                         <ColumnDefinition Width="2.5" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="ServerDropdown" Grid.Column="0" />
+                    <ComboBox x:Name="ServerDropdown" Grid.Column="0" DisplayMemberPath="Name" SelectionChanged="ServerDropdown_SelectionChanged" />
                     <Button x:Name="LaunchButton" Grid.Column="2" Content="Launch" IsEnabled="False" Click="LaunchButton_Click" />
                 </Grid>
             </Grid>

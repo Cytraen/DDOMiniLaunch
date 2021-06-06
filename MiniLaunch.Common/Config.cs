@@ -21,7 +21,7 @@ namespace MiniLaunch.Common
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public static readonly string DatabaseFilePath = Path.Combine(DataFolder, DatabaseFileName);
 
-        public Servers LastPlayedServer { get; set; } = Servers.Argonnessen;
+        public string LastPlayedServer { get; set; }
 
         public string GameDirectory { get; set; } = "C:\\Program Files (x86)\\StandingStoneGames\\Dungeons & Dragons Online";
 
