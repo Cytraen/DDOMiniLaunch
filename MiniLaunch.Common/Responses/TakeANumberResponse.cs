@@ -44,10 +44,20 @@
             set => queueNumberField = value;
         }
 
+        public int QueueNumberAsInt
+        {
+            get => int.Parse(queueNumberField[2..], System.Globalization.NumberStyles.HexNumber);
+        }
+
         public string NowServingNumber
         {
             get => nowServingNumberField;
             set => nowServingNumberField = value;
+        }
+
+        public int NowServingNumberAsInt
+        {
+            get => int.Parse(nowServingNumberField[2..], System.Globalization.NumberStyles.HexNumber);
         }
 
         public byte LoginTier

@@ -6,8 +6,7 @@ Custom launcher for Dungeons & Dragons Online (a.k.a. DDO, https://www.ddo.com/)
 
 ### Known Issues
 
-- **Passwords are saved in plaintext** for now
-- Launcher does not wait for queue position
+- **Passwords are saved in plaintext** (for now)
 
 &nbsp;
 

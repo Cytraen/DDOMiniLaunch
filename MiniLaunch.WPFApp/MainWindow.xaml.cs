@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace MiniLaunch.WPFApp
@@ -113,9 +114,27 @@ namespace MiniLaunch.WPFApp
                 startInfo = new ProcessStartInfo(Path.Combine(App.Configuration.GameDirectory, "dndclient.exe"), args);
             }
 
-            await App.SoapClient.QueueTakeANumber(subscriptionId, ticket, worldStatus.queueurls.Split(';').First());
-
             startInfo.WorkingDirectory = App.Configuration.GameDirectory;
+
+            var queueUrl = worldStatus.queueurls.Split(';').First();
+
+            var queueResult = await App.SoapClient.QueueTakeANumber(subscriptionId, ticket, queueUrl);
+
+            if (queueResult.QueueNumberAsInt > queueResult.NowServingNumberAsInt)
+            {
+                while (true)
+                {
+                    await Task.Delay(500);
+                    var currentStatus = await App.SoapClient.GetDatacenterStatus(worldInfo.ServerStatusUrl);
+                    var currentQueue = currentStatus.nowservingqueuenumberAsInt;
+
+                    if (queueResult.QueueNumberAsInt > currentQueue)
+                    {
+                        continue;
+                    }
+                    break;
+                }
+            }
 
             Process.Start(startInfo);
 

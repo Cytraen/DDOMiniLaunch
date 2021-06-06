@@ -78,6 +78,11 @@
             set => lastassignedqueuenumberField = value;
         }
 
+        public int lastassignedqueuenumberAsInt
+        {
+            get => int.Parse(lastassignedqueuenumberField[2..], System.Globalization.NumberStyles.HexNumber);
+        }
+
         public string name
         {
             get => nameField;
@@ -124,6 +129,11 @@
         {
             get => nowservingqueuenumberField;
             set => nowservingqueuenumberField = value;
+        }
+
+        public int nowservingqueuenumberAsInt
+        {
+            get => int.Parse(nowservingqueuenumberField[2..], System.Globalization.NumberStyles.HexNumber);
         }
 
         public object deny_billing_role
