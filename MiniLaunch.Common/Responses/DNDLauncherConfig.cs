@@ -2,61 +2,43 @@
 {
     // NOTE: Generated code may require at least .NET Framework 4.5 or .NET Core/Standard 2.0.
 
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    [System.Serializable()]
+    [System.ComponentModel.DesignerCategory("code")]
+    [System.Xml.Serialization.XmlType(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRoot(Namespace = "", IsNullable = false)]
     public partial class configuration
     {
         private configurationAdd[] appSettingsField;
 
-        [System.Xml.Serialization.XmlArrayItemAttribute("add", IsNullable = false)]
+        [System.Xml.Serialization.XmlArrayItem("add", IsNullable = false)]
         public configurationAdd[] appSettings
         {
-            get
-            {
-                return this.appSettingsField;
-            }
-            set
-            {
-                this.appSettingsField = value;
-            }
+            get => appSettingsField;
+            set => appSettingsField = value;
         }
     }
 
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Serializable()]
+    [System.ComponentModel.DesignerCategory("code")]
+    [System.Xml.Serialization.XmlType(AnonymousType = true)]
     public partial class configurationAdd
     {
         private string keyField;
 
         private string valueField;
 
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [System.Xml.Serialization.XmlAttribute()]
         public string key
         {
-            get
-            {
-                return this.keyField;
-            }
-            set
-            {
-                this.keyField = value;
-            }
+            get => keyField;
+            set => keyField = value;
         }
 
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [System.Xml.Serialization.XmlAttribute()]
         public string value
         {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
+            get => valueField;
+            set => valueField = value;
         }
     }
 }
