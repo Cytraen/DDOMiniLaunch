@@ -13,7 +13,7 @@ namespace MiniLaunch.Common
         public const string SettingsFileName = "config.json";
 
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-        public const string DatabaseFileName = "database.dat";
+        public const string DatabaseFileName = "database.db";
 
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public static readonly string SettingsFilePath = Path.Combine(DataFolder, SettingsFileName);
@@ -21,7 +21,7 @@ namespace MiniLaunch.Common
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public static readonly string DatabaseFilePath = Path.Combine(DataFolder, DatabaseFileName);
 
-        public string LastPlayedServer { get; set; }
+        public string LastPlayedServer { get; set; } = null;
 
         public string GameDirectory { get; set; } = "C:\\Program Files (x86)\\StandingStoneGames\\Dungeons & Dragons Online";
 

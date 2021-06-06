@@ -67,7 +67,10 @@ namespace MiniLaunch.WPFApp
             var account = (Tuple<string, string, string>)AccountListBox.SelectedItem;
 
             var username = account.Item1;
-            var password = await Database.GetPassword(username);
+            var encPassword = await Database.GetPassword(username);
+
+            var password = Encryption.Decrypt(encPassword);
+
             var subscriptionId = account.Item3;
 
             var loginResponse = await App.SoapClient.LoginAccount(username, password);

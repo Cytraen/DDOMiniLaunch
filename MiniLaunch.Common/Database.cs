@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace MiniLaunch.Common
@@ -17,11 +18,12 @@ namespace MiniLaunch.Common
 
         public static async Task CreateDatabase()
         {
+            File.Delete(Path.Combine(Config.DataFolder, "database.dat"));
+
             var createAccountsTable =
 @"CREATE TABLE Accounts (
     Username TEXT PRIMARY KEY,
-    Password TEXT NOT NULL,
-    Ticket TEXT NOT NULL
+    Password TEXT NOT NULL
 );";
             var createAccountsTableCmd = new SqliteCommand(createAccountsTable, DbConnection);
             await createAccountsTableCmd.ExecuteNonQueryAsync();
@@ -39,26 +41,25 @@ namespace MiniLaunch.Common
             await createSubscriptionsTableCmd.ExecuteNonQueryAsync();
         }
 
-        public static async Task AddSessionToDatabase(Session session, string password)
+        public static async Task AddSessionToDatabase(Account account)
         {
-            await AddAccount(session.Username, password, session.Ticket);
+            await AddAccount(account.Username, account.Password);
 
-            foreach (var subscription in session.Subscriptions)
+            foreach (var subscription in account.Subscriptions)
             {
-                await AddSubscription(subscription, session.Username);
+                await AddSubscription(subscription, account.Username);
             }
         }
 
-        public static Task AddAccount(string username, string password, string ticket)
+        public static Task AddAccount(string username, string password)
         {
             var addAccount =
-@"INSERT INTO Accounts VALUES ($username, $password, $ticket)
-    ON CONFLICT (Username) DO UPDATE SET Password=$password, Ticket=$ticket";
+@"INSERT INTO Accounts VALUES ($username, $password)
+    ON CONFLICT (Username) DO UPDATE SET Password=$password";
 
             var addAccountCmd = new SqliteCommand(addAccount, DbConnection);
             addAccountCmd.Parameters.AddWithValue("$username", username);
             addAccountCmd.Parameters.AddWithValue("$password", password);
-            addAccountCmd.Parameters.AddWithValue("$ticket", ticket);
             return addAccountCmd.ExecuteNonQueryAsync();
         }
 

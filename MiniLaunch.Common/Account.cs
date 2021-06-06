@@ -3,8 +3,12 @@ using System.Linq;
 
 namespace MiniLaunch.Common
 {
-    public class Session
+    public class Account
     {
+        public string Username { get; init; }
+
+        public string Password { get; init; }
+
         private List<Subscription> _subscriptions;
 
         public IReadOnlyList<Subscription> Subscriptions
@@ -12,9 +16,5 @@ namespace MiniLaunch.Common
             get => _subscriptions.AsReadOnly();
             init => _subscriptions = value.ToList();
         }
-
-        public string Ticket { get; init; }
-
-        public string Username { get; init; }
     }
 }

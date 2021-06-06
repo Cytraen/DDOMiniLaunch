@@ -7,7 +7,6 @@ namespace MiniLaunch.WPFApp
     public partial class NewAccountWindow : Window
     {
         private const string AddAccountErrorTitle = "Add Account - Error";
-        private const string DeleteAccountErrorTitle = "Delete Account - Error";
 
         public NewAccountWindow()
         {
@@ -38,14 +37,14 @@ namespace MiniLaunch.WPFApp
                 return;
             }
 
-            var session = new Session
+            var account = new Account
             {
-                Subscriptions = response.LoginAccountResult.Subscriptions.Select(x => (Subscription)x).Where(x => x != null).ToList(),
-                Ticket = response.LoginAccountResult.Ticket,
-                Username = username
+                Username = username,
+                Password = Encryption.Encrypt(password),
+                Subscriptions = response.LoginAccountResult.Subscriptions.Select(x => (Subscription)x).Where(x => x != null).ToList()
             };
 
-            await Database.AddSessionToDatabase(session, password);
+            await Database.AddSessionToDatabase(account);
 
             Close();
         }
