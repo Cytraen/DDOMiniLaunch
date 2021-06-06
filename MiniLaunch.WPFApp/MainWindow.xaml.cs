@@ -53,28 +53,13 @@ namespace MiniLaunch.WPFApp
 
         private void EnableLaunchButton()
         {
-            if (AccountListBox.SelectedItem is not null && ServerDropdown.SelectedItem is not null)
-            {
-                LaunchButton.IsEnabled = true;
-            }
-            else
-            {
-                LaunchButton.IsEnabled = false;
-            }
+            LaunchButton.IsEnabled = AccountListBox.SelectedItem is not null && ServerDropdown.SelectedItem is not null;
         }
 
         private void AccountListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             EnableLaunchButton();
-
-            if (AccountListBox.SelectedItem is null)
-            {
-                AccountListBoxContextDelete.IsEnabled = false;
-            }
-            else
-            {
-                AccountListBoxContextDelete.IsEnabled = true;
-            }
+            AccountListBoxContextDelete.IsEnabled = AccountListBox.SelectedItem is not null;
         }
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
@@ -136,7 +121,7 @@ namespace MiniLaunch.WPFApp
                 }
             }
 
-            Process.Start(startInfo);
+            _ = Process.Start(startInfo);
 
             App.Configuration.LastPlayedServer = ((ServerInfo)ServerDropdown.SelectedItem).Name;
             await App.SaveConfig(App.Configuration);
