@@ -33,9 +33,14 @@ namespace MiniLaunch.WPFApp
             var updateServerInfoTask = UpdateServerInfo();
             var updateLauncherConfigTask = UpdateLauncherConfig();
 
-            Configuration = await LoadConfig();
-            SelectGameFolder(Configuration);
-            await SaveConfig(Configuration);
+            await LoadConfig();
+
+            SelectGameDirectory(Configuration, out var isDirChanged);
+            if (isDirChanged)
+            {
+                await SaveConfig();
+            }
+
             await CreateDatabase();
 
             await updateServerInfoTask;
@@ -67,9 +72,9 @@ namespace MiniLaunch.WPFApp
             LauncherConfig = await SoapClient.GetLauncherConfig();
         }
 
-        internal static async Task<Config> LoadConfig()
+        internal static async Task LoadConfig()
         {
-            var config = new Config();
+            Configuration = new Config();
 
             if (File.Exists(Config.SettingsFilePath))
             {
@@ -77,7 +82,7 @@ namespace MiniLaunch.WPFApp
 
                 try
                 {
-                    config = JsonSerializer.Deserialize<Config>(configText);
+                    Configuration = JsonSerializer.Deserialize<Config>(configText);
                 }
                 catch (JsonException)
                 {
@@ -88,18 +93,17 @@ namespace MiniLaunch.WPFApp
             {
                 _ = Directory.CreateDirectory(Config.DataFolder);
             }
-
-            return config;
         }
 
-        internal static Task SaveConfig(Config config)
+        internal static Task SaveConfig()
         {
-            var configJson = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+            var configJson = JsonSerializer.Serialize(Configuration, new JsonSerializerOptions { WriteIndented = true });
             return File.WriteAllTextAsync(Config.SettingsFilePath, configJson);
         }
 
-        private static void SelectGameFolder(Config config)
+        private static void SelectGameDirectory(Config config, out bool isChanged)
         {
+            isChanged = false;
             const string launcherFileName = "DNDLauncher.exe";
 
             while (true)
@@ -109,6 +113,7 @@ namespace MiniLaunch.WPFApp
                     return;
                 }
 
+                isChanged = true;
                 _ = MessageBox.Show(launcherFileName + " was not found.\nPlease select your DDO installation directory.", "Can't find DDO installation directory");
 
                 var launcherFileDialog = new OpenFileDialog

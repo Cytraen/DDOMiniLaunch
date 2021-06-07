@@ -18,14 +18,14 @@
         <TabItem x:Name="AccountsTab" Header="Accounts">
             <Grid Margin="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="27.5" />
-                    <RowDefinition Height="2.75" />
+                    <RowDefinition Height="22.5" />
+                    <RowDefinition Height="2.25" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="2.75" />
-                    <RowDefinition Height="27.5" />
+                    <RowDefinition Height="2.25" />
+                    <RowDefinition Height="22.5" />
                 </Grid.RowDefinitions>
-                <Button x:Name="AddAccountButton" Grid.Row="0" FontSize="16" Content="Add Account" Click="AddAccountButton_Click" />
-                <ListBox x:Name="AccountListBox" Grid.Row="2" FontSize="14" SelectionMode="Single" SelectionChanged="AccountListBox_SelectionChanged">
+                <Button x:Name="AddAccountButton" Grid.Row="0" Content="Add Account" Click="AddAccountButton_Click" />
+                <ListBox x:Name="AccountListBox" Grid.Row="2" SelectionMode="Single" SelectionChanged="AccountListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
@@ -50,12 +50,22 @@
                         <ColumnDefinition Width="2.5" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="ServerDropdown" Grid.Column="0" FontSize="14" DisplayMemberPath="Name" SelectionChanged="ServerDropdown_SelectionChanged" />
-                    <Button x:Name="LaunchButton" Grid.Column="2" FontSize="14" Content="Launch" IsEnabled="False" Click="LaunchButton_Click" />
+                    <ComboBox x:Name="ServerDropdown" Grid.Column="0" DisplayMemberPath="Name" SelectionChanged="ServerDropdown_SelectionChanged" />
+                    <Button x:Name="LaunchButton" Grid.Column="2" Content="Launch" IsEnabled="False" Click="LaunchButton_Click" />
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem x:Name="SettingsTab" Header="Settings" IsEnabled="False">
+        <TabItem x:Name="SettingsTab" Header="Settings">
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <CheckBox Content="Use 64-bit game client" VerticalAlignment="Center" x:Name="Use64BitCheckBox" IsChecked="{Binding Use64Bit}" Click="Use64BitCheckBox_Click" />
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>

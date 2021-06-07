@@ -32,6 +32,8 @@ namespace MiniLaunch.WPFApp
                 ServerDropdown.SelectedItem = selected[0];
             }
             EnableLaunchButton();
+
+            Use64BitCheckBox.DataContext = App.Configuration;
         }
 
         private void AddAccountButton_Click(object sender, RoutedEventArgs e)
@@ -91,18 +93,15 @@ namespace MiniLaunch.WPFApp
             args = args.Replace("{BUGURL}", App.LauncherConfig["GameClient.Arg.bugurl"]);
             args = args.Replace("{SUPPORTSERVICEURL}", App.LauncherConfig["GameClient.Arg.supportserviceurl"]);
 
-            ProcessStartInfo startInfo;
-
-            if (App.Configuration.Use64Bit)
+            var startInfo = new ProcessStartInfo()
             {
-                startInfo = new ProcessStartInfo(Path.Combine(App.Configuration.GameDirectory, "x64", "dndclient64.exe"), args);
-            }
-            else
-            {
-                startInfo = new ProcessStartInfo(Path.Combine(App.Configuration.GameDirectory, "dndclient.exe"), args);
-            }
+                Arguments = args,
+                WorkingDirectory = App.Configuration.GameDirectory
+            };
 
-            startInfo.WorkingDirectory = App.Configuration.GameDirectory;
+            startInfo.FileName = App.Configuration.Use64Bit
+                ? Path.Combine(App.Configuration.GameDirectory, "x64", "dndclient64.exe")
+                : Path.Combine(App.Configuration.GameDirectory, "dndclient.exe");
 
             var queueUrl = worldStatus.queueurls.Split(';').First();
 
@@ -127,7 +126,7 @@ namespace MiniLaunch.WPFApp
             _ = Process.Start(startInfo);
 
             App.Configuration.LastPlayedServer = ((ServerInfo)ServerDropdown.SelectedItem).Name;
-            await App.SaveConfig(App.Configuration);
+            await App.SaveConfig();
         }
 
         private void ServerDropdown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -143,6 +142,11 @@ namespace MiniLaunch.WPFApp
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Properties.Settings.Default.Save();
+        }
+
+        private async void Use64BitCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            await App.SaveConfig();
         }
     }
 }
