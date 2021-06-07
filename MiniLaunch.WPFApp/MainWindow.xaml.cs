@@ -34,6 +34,7 @@ namespace MiniLaunch.WPFApp
             EnableLaunchButton();
 
             Use64BitCheckBox.DataContext = App.Configuration;
+            Use64BitCheckBox.IsEnabled = Environment.Is64BitOperatingSystem;
         }
 
         private void AddAccountButton_Click(object sender, RoutedEventArgs e)
