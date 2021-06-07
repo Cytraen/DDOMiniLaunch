@@ -93,6 +93,11 @@ namespace MiniLaunch.WPFApp
             {
                 _ = Directory.CreateDirectory(Config.DataFolder);
             }
+
+            if (Configuration.Use64Bit && !Environment.Is64BitOperatingSystem)
+            {
+                Configuration.Use64Bit = false;
+            }
         }
 
         internal static Task SaveConfig()
