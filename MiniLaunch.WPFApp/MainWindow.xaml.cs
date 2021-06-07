@@ -149,5 +149,23 @@ namespace MiniLaunch.WPFApp
         {
             await App.SaveConfig();
         }
+
+        private void SourceCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _ = Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/ashakoor/DDO-MiniLaunch",
+                UseShellExecute = true
+            });
+        }
+
+        private void DownloadsButton_Click(object sender, RoutedEventArgs e)
+        {
+            _ = Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/ashakoor/DDO-MiniLaunch/releases",
+                UseShellExecute = true
+            });
+        }
     }
 }

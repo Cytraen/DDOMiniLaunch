@@ -63,8 +63,13 @@
                     <RowDefinition Height="25" />
                     <RowDefinition Height="25" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
                 <CheckBox Content="Use 64-bit game client" VerticalAlignment="Center" x:Name="Use64BitCheckBox" IsChecked="{Binding Use64Bit}" Click="Use64BitCheckBox_Click" />
+                <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="SourceCodeButton" Content="Source Code" Margin="10 0 5 0" Padding="5 0" Click="SourceCodeButton_Click" />
+                    <Button x:Name="DownloadsButton" Content="Releases" Margin="5 0 10 0" Padding="5 0" Click="DownloadsButton_Click" />
+                </StackPanel>
             </Grid>
         </TabItem>
     </TabControl>
