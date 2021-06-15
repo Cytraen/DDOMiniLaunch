@@ -167,5 +167,35 @@ namespace MiniLaunch.WPFApp
                 UseShellExecute = true
             });
         }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "AppUpdater.exe",
+                Arguments = "ddoml DDOMiniLaunch.exe",
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            var process = Process.Start(psi);
+            var output = process.StandardOutput.ReadToEnd();
+
+            process.WaitForExit();
+
+            if (process.ExitCode == 2)
+            {
+                _ = MessageBox.Show("No update available.");
+                return;
+            }
+
+            if (process.ExitCode == 3)
+            {
+                _ = MessageBox.Show("Update available!");
+                _ = Process.Start(new ProcessStartInfo("AppUpdater.exe", output));
+                Environment.Exit(0);
+            }
+        }
     }
 }
