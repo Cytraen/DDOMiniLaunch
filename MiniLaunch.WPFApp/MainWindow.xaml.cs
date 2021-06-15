@@ -1,4 +1,4 @@
-﻿using MiniLaunch.Common;
+using MiniLaunch.Common;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -192,7 +192,7 @@ namespace MiniLaunch.WPFApp
 
             if (process.ExitCode == 3)
             {
-                _ = MessageBox.Show("Update available!");
+                _ = MessageBox.Show("Update available!\nDDOMiniLaunch will now close.");
                 _ = Process.Start(new ProcessStartInfo("AppUpdater.exe", output));
                 Environment.Exit(0);
             }
