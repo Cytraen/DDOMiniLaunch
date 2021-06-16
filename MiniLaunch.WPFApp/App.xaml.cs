@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using MiniLaunch.Common;
+﻿using MiniLaunch.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,54 +26,52 @@ namespace MiniLaunch.WPFApp
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            var startupWindow = new StartupWindow();
-            startupWindow.Show();
+            var getServerInfoTask = GetServerInfo();
+            var getLauncherConfigTask = GetLauncherConfig();
+            var ensureDatabaseCreatedTask = EnsureDatabaseCreated();
+            var loadConfigTask = LoadConfig();
 
-            var updateServerInfoTask = UpdateServerInfo();
-            var updateLauncherConfigTask = UpdateLauncherConfig();
+            await ensureDatabaseCreatedTask;
+            Configuration = await loadConfigTask;
 
-            await LoadConfig();
-
-            SelectGameDirectory(Configuration, out var isDirChanged);
-            if (isDirChanged)
+            if (Configuration.EnablePreview)
             {
-                await SaveConfig();
+                ServerInfo = (await getServerInfoTask).Concat(await GetServerInfo(true)).ToList();
+            }
+            else
+            {
+                ServerInfo = await getServerInfoTask;
             }
 
-            await CreateDatabase();
-
-            await updateServerInfoTask;
-            await updateLauncherConfigTask;
+            LauncherConfig = await getLauncherConfigTask;
 
             var mainWindow = new MainWindow();
-            startupWindow.Close();
             mainWindow.Show();
         }
 
-        internal static async Task UpdateServerInfo()
+        private static async Task<List<ServerInfo>> GetServerInfo(bool preview = false)
         {
-            var servers = await SoapClient.GetDatacenters("DDO");
+            var servers = await SoapClient.GetDatacenters("DDO", preview);
 
-            var serverList = servers.GetDatacentersResult.Datacenter.Worlds.Select(
+            return servers.GetDatacentersResult.Datacenter.Worlds.Select(
                 x => new ServerInfo
                 {
                     ChatServerUrl = x.ChatServerUrl,
                     Name = x.Name,
                     Order = x.Order,
-                    ServerStatusUrl = x.StatusServerUrl.Split('=').Last()
+                    ServerStatusUrl = x.StatusServerUrl.Split('=').Last(),
+                    IsPreview = preview
                 }).ToList();
-
-            ServerInfo = serverList.OrderBy(x => x.Order).ToList();
         }
 
-        internal static async Task UpdateLauncherConfig()
+        private static Task<Dictionary<string, string>> GetLauncherConfig(bool preview = false)
         {
-            LauncherConfig = await SoapClient.GetLauncherConfig();
+            return SoapClient.GetLauncherConfig(preview);
         }
 
-        internal static async Task LoadConfig()
+        private static async Task<Config> LoadConfig()
         {
-            Configuration = new Config();
+            var config = new Config();
 
             if (File.Exists(Config.SettingsFilePath))
             {
@@ -82,7 +79,7 @@ namespace MiniLaunch.WPFApp
 
                 try
                 {
-                    Configuration = JsonSerializer.Deserialize<Config>(configText);
+                    config = JsonSerializer.Deserialize<Config>(configText);
                 }
                 catch (JsonException)
                 {
@@ -94,10 +91,12 @@ namespace MiniLaunch.WPFApp
                 _ = Directory.CreateDirectory(Config.DataFolder);
             }
 
-            if (Configuration.Use64Bit && !Environment.Is64BitOperatingSystem)
+            if (!Environment.Is64BitOperatingSystem)
             {
-                Configuration.Use64Bit = false;
+                config.Use64Bit = false;
             }
+
+            return config;
         }
 
         internal static Task SaveConfig()
@@ -106,40 +105,7 @@ namespace MiniLaunch.WPFApp
             return File.WriteAllTextAsync(Config.SettingsFilePath, configJson);
         }
 
-        private static void SelectGameDirectory(Config config, out bool isChanged)
-        {
-            isChanged = false;
-            const string launcherFileName = "DNDLauncher.exe";
-
-            while (true)
-            {
-                if (File.Exists(Path.Combine(config.GameDirectory, launcherFileName)))
-                {
-                    return;
-                }
-
-                isChanged = true;
-                _ = MessageBox.Show(launcherFileName + " was not found.\nPlease select your DDO installation directory.", "Can't find DDO installation directory");
-
-                var launcherFileDialog = new OpenFileDialog
-                {
-                    Filter = "DDO Launcher|" + launcherFileName,
-                    Title = "Select DNDLauncher.exe in your DDO install folder"
-                };
-
-                var dialogResult = launcherFileDialog.ShowDialog();
-
-                if (!dialogResult.HasValue || !dialogResult.Value)
-                {
-                    _ = MessageBox.Show("DDOMiniLaunch is closing...");
-                    Environment.Exit(0);
-                }
-
-                config.GameDirectory = launcherFileDialog.FileName.Replace("\\" + launcherFileName, "", StringComparison.InvariantCultureIgnoreCase);
-            }
-        }
-
-        internal static Task CreateDatabase()
+        private static Task EnsureDatabaseCreated()
         {
             if (!File.Exists(Config.DatabaseFilePath))
             {

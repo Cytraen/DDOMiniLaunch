@@ -14,12 +14,6 @@
     <Setting Name="MainLeft" Type="System.Double" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="StartupTop" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">200</Value>
-    </Setting>
-    <Setting Name="StartupLeft" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">200</Value>
-    </Setting>
     <Setting Name="NewTop" Type="System.Double" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>

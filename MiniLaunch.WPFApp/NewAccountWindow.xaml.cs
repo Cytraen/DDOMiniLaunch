@@ -18,18 +18,13 @@ namespace MiniLaunch.WPFApp
             var username = UsernameTextBox.Text;
             var password = PasswordTextBox.Password;
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                _ = MessageBox.Show("Must enter a username.", AddAccountErrorTitle);
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                _ = MessageBox.Show("Must enter a password.", AddAccountErrorTitle);
+                _ = MessageBox.Show("Must enter a username and a password.", AddAccountErrorTitle);
                 return;
             }
 
-            var response = await App.SoapClient.LoginAccount(username, password);
+            var response = await App.SoapClient.LoginAccount(username, password, false);
 
             if (response.LoginAccountResult.Subscriptions.Length == 0)
             {
