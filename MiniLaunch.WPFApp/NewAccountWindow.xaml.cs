@@ -18,14 +18,9 @@ namespace MiniLaunch.WPFApp
             var username = UsernameTextBox.Text;
             var password = PasswordTextBox.Password;
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                _ = MessageBox.Show("Must enter a username.", AddAccountErrorTitle);
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                _ = MessageBox.Show("Must enter a password.", AddAccountErrorTitle);
+                _ = MessageBox.Show("Must enter a username and a password.", AddAccountErrorTitle);
                 return;
             }
 

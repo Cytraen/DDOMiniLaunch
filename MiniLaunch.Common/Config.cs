@@ -7,6 +7,9 @@ namespace MiniLaunch.Common
     public class Config
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        public const string LauncherExeName = "DNDLauncher.exe";
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public const string SettingsFileName = "config.json";
 
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]

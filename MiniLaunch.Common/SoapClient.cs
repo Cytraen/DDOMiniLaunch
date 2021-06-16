@@ -95,7 +95,7 @@ namespace MiniLaunch.Common
             const string requestUri = "/GLS.AuthServer/LoginQueue.aspx";
             var requestBody = "command=TakeANumber&subscription=" + subscription + "&ticket=" + HttpUtility.UrlEncode(ticket) + "&ticket_type=GLS&queue_url=" + queueUrl;
 
-            var request = new HttpRequestMessage(HttpMethod.Post, new Uri((preview ? PreviewBaseAddress : BaseAddress) + requestUri, UriKind.Relative))
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri((preview ? PreviewBaseAddress : BaseAddress) + requestUri, UriKind.Absolute))
             {
                 Content = new StringContent(requestBody, Encoding.UTF8, "application/x-www-form-urlencoded")
             };
