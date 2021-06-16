@@ -9,5 +9,7 @@
         public string ServerStatusUrl { get; set; }
 
         public string ChatServerUrl { get; init; }
+
+        public bool IsPreview { get; init; }
     }
 }

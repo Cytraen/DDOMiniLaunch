@@ -16,11 +16,11 @@ namespace MiniLaunch.Common
     {
         private readonly HttpClient _httpClient;
 
-        public SoapClient()
+        public SoapClient(bool preview = false)
         {
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://gls.ddo.com", UriKind.Absolute)
+                BaseAddress = new Uri(preview ? "https://gls-lm.ddo.com" : "https://gls.ddo.com", UriKind.Absolute)
             };
         }
 

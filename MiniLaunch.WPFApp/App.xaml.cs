@@ -14,6 +14,8 @@ namespace MiniLaunch.WPFApp
     {
         public static SoapClient SoapClient { get; set; }
 
+        public static SoapClient SoapPreviewClient { get; set; }
+
         public static List<ServerInfo> ServerInfo { get; set; }
 
         public static Config Configuration { get; set; }
@@ -23,6 +25,7 @@ namespace MiniLaunch.WPFApp
         public App()
         {
             SoapClient = new SoapClient();
+            SoapPreviewClient = new SoapClient(true);
         }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -36,6 +39,7 @@ namespace MiniLaunch.WPFApp
             await LoadConfig();
 
             SelectGameDirectory(Configuration, out var isDirChanged);
+
             if (isDirChanged)
             {
                 await SaveConfig();
@@ -61,10 +65,30 @@ namespace MiniLaunch.WPFApp
                     ChatServerUrl = x.ChatServerUrl,
                     Name = x.Name,
                     Order = x.Order,
-                    ServerStatusUrl = x.StatusServerUrl.Split('=').Last()
+                    ServerStatusUrl = x.StatusServerUrl.Split('=').Last(),
+                    IsPreview = false
                 }).ToList();
 
-            ServerInfo = serverList.OrderBy(x => x.Order).ToList();
+            if (Configuration.EnablePreview)
+            {
+                var previewServers = await SoapPreviewClient.GetDatacenters("DDO");
+
+                var previewServerList = previewServers.GetDatacentersResult.Datacenter.Worlds.Select(
+                    x => new ServerInfo
+                    {
+                        ChatServerUrl = x.ChatServerUrl,
+                        Name = x.Name,
+                        Order = x.Order,
+                        ServerStatusUrl = x.StatusServerUrl.Split('=').Last(),
+                        IsPreview = true
+                    }).ToList();
+
+                ServerInfo = serverList.Concat(previewServerList).OrderBy(x => x.IsPreview).ThenBy(x => x.Order).ToList();
+            }
+            else
+            {
+                ServerInfo = serverList.OrderBy(x => x.Order).ToList();
+            }
         }
 
         internal static async Task UpdateLauncherConfig()
@@ -106,7 +130,7 @@ namespace MiniLaunch.WPFApp
             return File.WriteAllTextAsync(Config.SettingsFilePath, configJson);
         }
 
-        private static void SelectGameDirectory(Config config, out bool isChanged)
+        private static void SelectGameDirectory(Config config, out bool isChanged, bool preview = false)
         {
             isChanged = false;
             const string launcherFileName = "DNDLauncher.exe";
@@ -124,7 +148,7 @@ namespace MiniLaunch.WPFApp
                 var launcherFileDialog = new OpenFileDialog
                 {
                     Filter = "DDO Launcher|" + launcherFileName,
-                    Title = "Select DNDLauncher.exe in your DDO install folder"
+                    Title = "Select " + launcherFileName + " in your DDO install folder"
                 };
 
                 var dialogResult = launcherFileDialog.ShowDialog();

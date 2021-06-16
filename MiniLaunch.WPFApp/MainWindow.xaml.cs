@@ -34,7 +34,7 @@ namespace MiniLaunch.WPFApp
             EnableLaunchButton();
 
             Use64BitCheckBox.DataContext = App.Configuration;
-            Use64BitCheckBox.IsEnabled = Environment.Is64BitOperatingSystem;
+            EnablePreviewCheckBox.DataContext = App.Configuration;
         }
 
         private void AddAccountButton_Click(object sender, RoutedEventArgs e)
@@ -56,7 +56,9 @@ namespace MiniLaunch.WPFApp
 
         private void EnableLaunchButton()
         {
-            LaunchButton.IsEnabled = AccountListBox.SelectedItem is not null && ServerDropdown.SelectedItem is not null;
+            LaunchButton.IsEnabled =
+                AccountListBox.SelectedItem is not null
+                && ServerDropdown.SelectedItem is not null;
         }
 
         private void AccountListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -67,6 +69,10 @@ namespace MiniLaunch.WPFApp
 
         private async void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
+            var serverInfo = (ServerInfo)ServerDropdown.SelectedItem;
+
+            var client = serverInfo.IsPreview ? App.SoapPreviewClient : App.SoapClient;
+
             var account = (Tuple<string, string, string>)AccountListBox.SelectedItem;
 
             var username = account.Item1;
@@ -76,17 +82,16 @@ namespace MiniLaunch.WPFApp
 
             var subscriptionId = account.Item3;
 
-            var loginResponse = await App.SoapClient.LoginAccount(username, password);
+            var loginResponse = await client.LoginAccount(username, password);
             var ticket = loginResponse.LoginAccountResult.Ticket;
 
-            var worldInfo = (ServerInfo)ServerDropdown.SelectedItem;
-            var worldStatus = await App.SoapClient.GetDatacenterStatus(worldInfo.ServerStatusUrl);
+            var worldStatus = await client.GetDatacenterStatus(serverInfo.ServerStatusUrl);
 
             var args = App.LauncherConfig["GameClient.WIN32.ArgTemplate"];
             args = args.Replace("{SUBSCRIPTION}", subscriptionId);
             args = args.Replace("{LOGIN}", worldStatus.loginservers.Split(';').First());
             args = args.Replace("{GLS}", ticket);
-            args = args.Replace("{CHAT}", worldInfo.ChatServerUrl);
+            args = args.Replace("{CHAT}", serverInfo.ChatServerUrl);
             args = args.Replace("{LANG}", "English");
             args = args.Replace("{AUTHSERVERURL}", App.LauncherConfig["GameClient.Arg.authserverurl"]);
             args = args.Replace("{GLSTICKETLIFETIME}", App.LauncherConfig["GameClient.Arg.glsticketlifetime"]);
@@ -94,26 +99,28 @@ namespace MiniLaunch.WPFApp
             args = args.Replace("{BUGURL}", App.LauncherConfig["GameClient.Arg.bugurl"]);
             args = args.Replace("{SUPPORTSERVICEURL}", App.LauncherConfig["GameClient.Arg.supportserviceurl"]);
 
+            var gameDir = serverInfo.IsPreview ? App.Configuration.PreviewGameDirectory : App.Configuration.GameDirectory;
+
             var startInfo = new ProcessStartInfo()
             {
                 Arguments = args,
-                WorkingDirectory = App.Configuration.GameDirectory
+                WorkingDirectory = gameDir
             };
 
             startInfo.FileName = App.Configuration.Use64Bit
-                ? Path.Combine(App.Configuration.GameDirectory, "x64", "dndclient64.exe")
-                : Path.Combine(App.Configuration.GameDirectory, "dndclient.exe");
+                ? Path.Combine(gameDir, "x64", "dndclient64.exe")
+                : Path.Combine(gameDir, "dndclient.exe");
 
             var queueUrl = worldStatus.queueurls.Split(';').First();
 
-            var queueResult = await App.SoapClient.QueueTakeANumber(subscriptionId, ticket, queueUrl);
+            var queueResult = await client.QueueTakeANumber(subscriptionId, ticket, queueUrl);
 
             if (queueResult.QueueNumberAsInt > queueResult.NowServingNumberAsInt)
             {
                 while (true)
                 {
                     await Task.Delay(500);
-                    var currentStatus = await App.SoapClient.GetDatacenterStatus(worldInfo.ServerStatusUrl);
+                    var currentStatus = await client.GetDatacenterStatus(serverInfo.ServerStatusUrl);
                     var currentQueue = currentStatus.nowservingqueuenumberAsInt;
 
                     if (queueResult.QueueNumberAsInt > currentQueue)
@@ -126,7 +133,7 @@ namespace MiniLaunch.WPFApp
 
             _ = Process.Start(startInfo);
 
-            App.Configuration.LastPlayedServer = ((ServerInfo)ServerDropdown.SelectedItem).Name;
+            App.Configuration.LastPlayedServer = serverInfo.Name;
             await App.SaveConfig();
         }
 
@@ -148,6 +155,12 @@ namespace MiniLaunch.WPFApp
         private async void Use64BitCheckBox_Click(object sender, RoutedEventArgs e)
         {
             await App.SaveConfig();
+        }
+
+        private async void EnablePreviewCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            await App.SaveConfig();
+            MessageBox.Show("You must restart DDOMiniLaunch for this change to take effect.");
         }
 
         private void SourceCodeButton_Click(object sender, RoutedEventArgs e)

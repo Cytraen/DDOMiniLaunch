@@ -23,8 +23,12 @@ namespace MiniLaunch.Common
 
         public string LastPlayedServer { get; set; } = null;
 
+        public bool Use64Bit { get; set; } = Environment.Is64BitOperatingSystem;
+
         public string GameDirectory { get; set; } = "C:\\Program Files (x86)\\StandingStoneGames\\Dungeons & Dragons Online";
 
-        public bool Use64Bit { get; set; } = Environment.Is64BitOperatingSystem;
+        public bool EnablePreview { get; set; } = false;
+
+        public string PreviewGameDirectory { get; set; } = "C:\\Program Files (x86)\\StandingStoneGames\\Dungeons & Dragons Online (Preview)";
     }
 }
