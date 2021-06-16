@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using MiniLaunch.Common;
 using System;
 using System.Diagnostics;
@@ -74,8 +75,6 @@ namespace MiniLaunch.WPFApp
         {
             var serverInfo = (ServerInfo)ServerDropdown.SelectedItem;
 
-            var client = serverInfo.IsPreview ? App.SoapPreviewClient : App.SoapClient;
-
             var account = (Tuple<string, string, string>)AccountListBox.SelectedItem;
 
             var username = account.Item1;
@@ -85,24 +84,53 @@ namespace MiniLaunch.WPFApp
 
             var subscriptionId = account.Item3;
 
-            var loginResponse = await client.LoginAccount(username, password);
+            var loginResponse = await App.SoapClient.LoginAccount(username, password, serverInfo.IsPreview);
             var ticket = loginResponse.LoginAccountResult.Ticket;
 
-            var worldStatus = await client.GetDatacenterStatus(serverInfo.ServerStatusUrl);
+            var worldStatus = await App.SoapClient.GetDatacenterStatus(serverInfo.ServerStatusUrl, serverInfo.IsPreview);
 
-            var args = App.LauncherConfig["GameClient.WIN32.ArgTemplate"];
-            args = args.Replace("{SUBSCRIPTION}", subscriptionId);
-            args = args.Replace("{LOGIN}", worldStatus.loginservers.Split(';').First());
-            args = args.Replace("{GLS}", ticket);
-            args = args.Replace("{CHAT}", serverInfo.ChatServerUrl);
-            args = args.Replace("{LANG}", "English");
-            args = args.Replace("{AUTHSERVERURL}", App.LauncherConfig["GameClient.Arg.authserverurl"]);
-            args = args.Replace("{GLSTICKETLIFETIME}", App.LauncherConfig["GameClient.Arg.glsticketlifetime"]);
-            args = args.Replace("{SUPPORTURL}", App.LauncherConfig["GameClient.Arg.supporturl"]);
-            args = args.Replace("{BUGURL}", App.LauncherConfig["GameClient.Arg.bugurl"]);
-            args = args.Replace("{SUPPORTSERVICEURL}", App.LauncherConfig["GameClient.Arg.supportserviceurl"]);
+            var args = App.LauncherConfig["GameClient.WIN32.ArgTemplate"]
+                .Replace("{SUBSCRIPTION}", subscriptionId)
+                .Replace("{LOGIN}", worldStatus.loginservers.Split(';').First())
+                .Replace("{GLS}", ticket)
+                .Replace("{CHAT}", serverInfo.ChatServerUrl)
+                .Replace("{LANG}", "English")
+                .Replace("{AUTHSERVERURL}", App.LauncherConfig["GameClient.Arg.authserverurl"])
+                .Replace("{GLSTICKETLIFETIME}", App.LauncherConfig["GameClient.Arg.glsticketlifetime"])
+                .Replace("{SUPPORTURL}", App.LauncherConfig["GameClient.Arg.supporturl"])
+                .Replace("{BUGURL}", App.LauncherConfig["GameClient.Arg.bugurl"])
+                .Replace("{SUPPORTSERVICEURL}", App.LauncherConfig["GameClient.Arg.supportserviceurl"]);
 
             var gameDir = serverInfo.IsPreview ? App.Configuration.PreviewGameDirectory : App.Configuration.GameDirectory;
+
+            if (!File.Exists(Path.Combine(gameDir, "DNDLauncher.exe")))
+            {
+                var defaultDir = serverInfo.IsPreview ? Config.PreviewDefaultGameDirectory : Config.DefaultGameDirectory;
+                var configDir = serverInfo.IsPreview ? App.Configuration.PreviewGameDirectory : App.Configuration.GameDirectory;
+
+                if (File.Exists(Path.Combine(defaultDir, "DNDLauncher.exe")))
+                {
+                    configDir = defaultDir;
+                }
+                else
+                {
+                    _ = MessageBox.Show("DNDLauncher.exe was not found.\nPlease select your DDO installation directory.", "DDOMiniLaunch - Invalid DDO installation directory");
+
+                    var launcherFileDialog = new OpenFileDialog
+                    {
+                        Filter = "DDO Launcher|DNDLauncher.exe",
+                        Title = "Select DNDLauncher.exe in your DDO install folder"
+                    };
+
+                    var dialogResult = launcherFileDialog.ShowDialog();
+
+                    if (!dialogResult.HasValue || !dialogResult.Value)
+                    {
+                        _ = MessageBox.Show("DDOMiniLaunch is closing...");
+                        Environment.Exit(0);
+                    }
+                }
+            }
 
             var startInfo = new ProcessStartInfo()
             {
@@ -116,14 +144,14 @@ namespace MiniLaunch.WPFApp
 
             var queueUrl = worldStatus.queueurls.Split(';').First();
 
-            var queueResult = await client.QueueTakeANumber(subscriptionId, ticket, queueUrl);
+            var queueResult = await App.SoapClient.QueueTakeANumber(subscriptionId, ticket, queueUrl, serverInfo.IsPreview);
 
             if (queueResult.QueueNumberAsInt > queueResult.NowServingNumberAsInt)
             {
                 while (true)
                 {
                     await Task.Delay(500);
-                    var currentStatus = await client.GetDatacenterStatus(serverInfo.ServerStatusUrl);
+                    var currentStatus = await App.SoapClient.GetDatacenterStatus(serverInfo.ServerStatusUrl, serverInfo.IsPreview);
                     var currentQueue = currentStatus.nowservingqueuenumberAsInt;
 
                     if (queueResult.QueueNumberAsInt > currentQueue)

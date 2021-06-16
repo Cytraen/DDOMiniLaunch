@@ -14,8 +14,6 @@ namespace MiniLaunch.WPFApp
     {
         public static SoapClient SoapClient { get; set; }
 
-        public static SoapClient SoapPreviewClient { get; set; }
-
         public static List<ServerInfo> ServerInfo { get; set; }
 
         public static Config Configuration { get; set; }
@@ -25,7 +23,6 @@ namespace MiniLaunch.WPFApp
         public App()
         {
             SoapClient = new SoapClient();
-            SoapPreviewClient = new SoapClient(true);
         }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -34,14 +31,6 @@ namespace MiniLaunch.WPFApp
             var updateLauncherConfigTask = UpdateLauncherConfig();
 
             await LoadConfig();
-
-            SelectGameDirectory(Configuration, out var isDirChanged);
-
-            if (isDirChanged)
-            {
-                await SaveConfig();
-            }
-
             await CreateDatabase();
 
             await updateServerInfoTask;
@@ -53,7 +42,7 @@ namespace MiniLaunch.WPFApp
 
         internal static async Task UpdateServerInfo()
         {
-            var servers = await SoapClient.GetDatacenters("DDO");
+            var servers = await SoapClient.GetDatacenters("DDO", false);
 
             var serverList = servers.GetDatacentersResult.Datacenter.Worlds.Select(
                 x => new ServerInfo
@@ -67,7 +56,7 @@ namespace MiniLaunch.WPFApp
 
             if (Configuration.EnablePreview)
             {
-                var previewServers = await SoapPreviewClient.GetDatacenters("DDO");
+                var previewServers = await SoapClient.GetDatacenters("DDO", true);
 
                 var previewServerList = previewServers.GetDatacentersResult.Datacenter.Worlds.Select(
                     x => new ServerInfo
@@ -89,7 +78,7 @@ namespace MiniLaunch.WPFApp
 
         internal static async Task UpdateLauncherConfig()
         {
-            LauncherConfig = await SoapClient.GetLauncherConfig();
+            LauncherConfig = await SoapClient.GetLauncherConfig(false);
         }
 
         internal static async Task LoadConfig()

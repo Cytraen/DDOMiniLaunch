@@ -29,7 +29,7 @@ namespace MiniLaunch.WPFApp
                 return;
             }
 
-            var response = await App.SoapClient.LoginAccount(username, password);
+            var response = await App.SoapClient.LoginAccount(username, password, false);
 
             if (response.LoginAccountResult.Subscriptions.Length == 0)
             {
