@@ -208,10 +208,22 @@ namespace MiniLaunch.WPFApp
 
             if (process.ExitCode == 3)
             {
-                _ = MessageBox.Show("Update available!\nDDOMiniLaunch will now close.");
-                _ = Process.Start(new ProcessStartInfo("AppUpdater.exe", output));
-                Environment.Exit(0);
+                var result = MessageBox.Show("There is an update available.\nWould you like to update now?\nDDOMiniLaunch will close.", "DDOMiniLaunch - Update Available", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _ = Process.Start(new ProcessStartInfo("AppUpdater.exe", output));
+                    Environment.Exit(0);
+                }
             }
+        }
+
+        private void ChangeGameDirButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void ChangePreviewGameDirButton_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

@@ -7,7 +7,7 @@
         xmlns:settings="clr-namespace:MiniLaunch.WPFApp.Properties"
         mc:Ignorable="d"
         Title="DDO MiniLaunch"
-        MinHeight="200" MinWidth="280"
+        MinHeight="200" MinWidth="290"
         Height="{Binding MainHeight, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
         Width="{Binding MainWidth, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
         Top="{Binding MainTop, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
@@ -61,9 +61,6 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="25" />
                     <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
@@ -79,15 +76,24 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Text="Game directory:" />
                     <TextBox x:Name="GameDirTextBox" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Height="22" IsReadOnly="True" Text="{Binding GameDirectory}" />
-                    <Button x:Name="ChangeGameDirButton" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Height="22" Margin="2.5 0 0 0" Content="Change" />
+                    <Button x:Name="ChangeGameDirButton" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Height="22" Margin="2.5 0 0 0" Content="Change" Click="ChangeGameDirButton_Click" />
 
                     <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Text="Preview directory:" />
                     <TextBox x:Name="PreviewGameDirTextBox" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Height="22" IsReadOnly="True" Text="{Binding PreviewGameDirectory}" />
-                    <Button x:Name="ChangePreviewGameDirButton" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Height="22" Margin="2.5 0 0 0" Content="Change" />
+                    <Button x:Name="ChangePreviewGameDirButton" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" Height="22" Margin="2.5 0 0 0" Content="Change" Click="ChangePreviewGameDirButton_Click" />
                 </Grid>
                 <CheckBox Grid.Row="1" Content="Use 64-bit game client" VerticalAlignment="Center" x:Name="Use64BitCheckBox" IsChecked="{Binding Use64Bit}" Click="Use64BitCheckBox_Click" />
                 <CheckBox Grid.Row="2" Content="Enable preview (Lamannia)" VerticalAlignment="Center" x:Name="EnablePreviewCheckBox" IsChecked="{Binding EnablePreview}" Click="EnablePreviewCheckBox_Click" />
-                <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center">
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="AboutTab" Header="About">
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="SourceCodeButton" Content="Source Code" Margin="10 0 5 0" Padding="5 0" Click="SourceCodeButton_Click" />
                     <Button x:Name="DownloadsButton" Content="Releases" Margin="5 0 5 0" Padding="5 0" Click="DownloadsButton_Click" />
                     <Button x:Name="UpdateButton" Content="Update" Margin="5 0 10 0" Padding="5 0" Click="UpdateButton_Click" />
