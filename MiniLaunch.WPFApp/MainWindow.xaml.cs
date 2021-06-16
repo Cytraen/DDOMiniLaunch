@@ -35,6 +35,9 @@ namespace MiniLaunch.WPFApp
 
             Use64BitCheckBox.DataContext = App.Configuration;
             EnablePreviewCheckBox.DataContext = App.Configuration;
+
+            GameDirTextBox.DataContext = App.Configuration;
+            PreviewGameDirTextBox.DataContext = App.Configuration;
         }
 
         private void AddAccountButton_Click(object sender, RoutedEventArgs e)
