@@ -10,7 +10,7 @@
 		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/ashakoor/DDO-MiniLaunch</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>0.2.3</Version>
+		<Version>0.3.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

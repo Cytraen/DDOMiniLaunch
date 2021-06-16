@@ -15,6 +15,8 @@ namespace MiniLaunch.WPFApp
         {
             InitializeComponent();
 
+            AboutVersionTextBlock.Text = "DDOMiniLaunch v" + typeof(App).Assembly.GetName().Version?.ToString(3);
+
             AccountListBox.ItemsSource = Database.GetSubscriptions().GetAwaiter().GetResult();
 
             if (AccountListBox.Items.Count == 1)
