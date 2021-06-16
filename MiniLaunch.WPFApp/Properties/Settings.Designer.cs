@@ -74,30 +74,6 @@ namespace MiniLaunch.WPFApp.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public double StartupTop {
-            get {
-                return ((double)(this["StartupTop"]));
-            }
-            set {
-                this["StartupTop"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public double StartupLeft {
-            get {
-                return ((double)(this["StartupLeft"]));
-            }
-            set {
-                this["StartupLeft"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public double NewTop {
             get {
                 return ((double)(this["NewTop"]));

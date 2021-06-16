@@ -30,9 +30,6 @@ namespace MiniLaunch.WPFApp
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            var startupWindow = new StartupWindow();
-            startupWindow.Show();
-
             var updateServerInfoTask = UpdateServerInfo();
             var updateLauncherConfigTask = UpdateLauncherConfig();
 
@@ -51,7 +48,6 @@ namespace MiniLaunch.WPFApp
             await updateLauncherConfigTask;
 
             var mainWindow = new MainWindow();
-            startupWindow.Close();
             mainWindow.Show();
         }
 
