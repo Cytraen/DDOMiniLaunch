@@ -18,6 +18,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="AppUpdater.ClientLib">
+	    <HintPath>D:\Repositories\_Binaries\AppUpdater.ClientLib.dll</HintPath>
+	  </Reference>
+	  <Reference Include="AppUpdater.Common">
+	    <HintPath>D:\Repositories\_Binaries\AppUpdater.Common.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Update="Properties\Settings.Designer.cs">
 			<DesignTimeSharedInput>True</DesignTimeSharedInput>
 			<AutoGen>True</AutoGen>

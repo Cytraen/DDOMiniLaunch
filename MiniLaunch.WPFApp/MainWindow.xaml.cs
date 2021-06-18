@@ -157,38 +157,9 @@ namespace MiniLaunch.WPFApp
             });
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "AppUpdater.exe",
-                Arguments = "ddoml DDOMiniLaunch.exe",
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-
-            var process = Process.Start(psi);
-            var output = process.StandardOutput.ReadToEnd();
-
-            process.WaitForExit();
-
-            if (process.ExitCode == 2)
-            {
-                _ = MessageBox.Show("No update available.");
-                return;
-            }
-
-            if (process.ExitCode == 3)
-            {
-                var result = MessageBox.Show("There is an update available.\nWould you like to update now?\nDDOMiniLaunch will close.", "DDOMiniLaunch - Update Available", MessageBoxButton.YesNo);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    _ = Process.Start(new ProcessStartInfo("AppUpdater.exe", output));
-                    Environment.Exit(0);
-                }
-            }
+            await App.UpdateApp();
         }
 
         private void CheckAssignGameDirectory(ref string directory, string defaultDir, out bool changed)
