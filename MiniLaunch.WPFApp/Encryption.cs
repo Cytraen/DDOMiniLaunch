@@ -24,7 +24,7 @@ namespace MiniLaunch.WPFApp
         /// is a null reference.</exception>
         public static string Encrypt(string plainText)
         {
-            if (plainText == null) throw new ArgumentNullException("plainText");
+            if (plainText == null) throw new ArgumentNullException(nameof(plainText));
 
             //encrypt data
             var data = Encoding.Unicode.GetBytes(plainText);
@@ -48,7 +48,7 @@ namespace MiniLaunch.WPFApp
         /// is a null reference.</exception>
         public static string Decrypt(string cipher)
         {
-            if (cipher == null) throw new ArgumentNullException("cipher");
+            if (cipher == null) throw new ArgumentNullException(nameof(cipher));
 
             //parse base64 string
             byte[] data = Convert.FromBase64String(cipher);
