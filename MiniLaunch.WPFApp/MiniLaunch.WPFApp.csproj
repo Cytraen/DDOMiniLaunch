@@ -12,18 +12,12 @@
 		<RepositoryType>git</RepositoryType>
 		<Version>0.3.0</Version>
 	</PropertyGroup>
-
 	<ItemGroup>
-		<ProjectReference Include="..\MiniLaunch.Common\MiniLaunch.Common.csproj" />
+	  <PackageReference Include="CSharpDate.ClientLib" Version="0.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="AppUpdater.ClientLib">
-	    <HintPath>D:\Repositories\_Binaries\AppUpdater.ClientLib.dll</HintPath>
-	  </Reference>
-	  <Reference Include="AppUpdater.Common">
-	    <HintPath>D:\Repositories\_Binaries\AppUpdater.Common.dll</HintPath>
-	  </Reference>
+		<ProjectReference Include="..\MiniLaunch.Common\MiniLaunch.Common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
