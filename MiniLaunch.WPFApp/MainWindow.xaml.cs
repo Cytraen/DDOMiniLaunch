@@ -159,7 +159,7 @@ namespace MiniLaunch.WPFApp
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            await App.UpdateApp();
+            await App.UpdateApp(true);
         }
 
         private void CheckAssignGameDirectory(ref string directory, string defaultDir, out bool changed)

@@ -24,13 +24,19 @@ namespace MiniLaunch.WPFApp
 
         public App()
         {
-            UpdateClient = new("ddoml");
+            UpdateClient = new("ddoml", "https://update.cytn.xyz");
+
+            UpdateClient.ExecutableName = "DDOMiniLaunch.exe";
+            UpdateClient.NoUpdateMessage = () => MessageBox.Show("No updates available.", "DDOMiniLaunch");
+            UpdateClient.UpdateConfirmation = () => MessageBox.Show("There is an update available.\nWould you like to update now?", "DDOMiniLaunch - Update Available", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+
             SoapClient = new();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await UpdateApp();
+            await UpdateApp(false);
+
             var getServerInfoTask = GetServerInfo();
             var getLauncherConfigTask = GetLauncherConfig();
             var ensureDatabaseCreatedTask = EnsureDatabaseCreated();
@@ -54,12 +60,10 @@ namespace MiniLaunch.WPFApp
             mainWindow.Show();
         }
 
-        internal static Task UpdateApp()
+        internal static Task UpdateApp(bool shouldWarn)
         {
-            return UpdateClient.CheckAndDownloadUpdate(typeof(App).Assembly.GetName().Version, AskToUpdate, default);
+            return UpdateClient.CheckAndDownloadUpdate(typeof(App).Assembly.GetName().Version, shouldWarn);
         }
-
-        private static bool AskToUpdate() => MessageBox.Show("There is an update available.\nWould you like to update now?", "DDOMiniLaunch - Update Available", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
 
         private static async Task<List<ServerInfo>> GetServerInfo(bool preview = false)
         {
