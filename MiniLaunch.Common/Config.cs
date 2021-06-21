@@ -6,6 +6,8 @@ namespace MiniLaunch.Common
 {
     public class Config
     {
+        #region Constants
+
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public const string LauncherExeName = "DNDLauncher.exe";
 
@@ -30,14 +32,22 @@ namespace MiniLaunch.Common
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public const string PreviewDefaultGameDirectory = "C:\\Program Files (x86)\\StandingStoneGames\\Dungeons & Dragons Online (Preview)";
 
+        #endregion Constants
+
+        #region Settings
+
         public string LastPlayedServer { get; set; }
+
+        public string GameDirectory { get; set; }
+
+        public string PreviewGameDirectory { get; set; }
 
         public bool Use64Bit { get; set; }
 
         public bool EnablePreview { get; set; }
 
-        public string GameDirectory { get; set; }
+        public bool CheckUpdateAtStartup { get; set; } = true;
 
-        public string PreviewGameDirectory { get; set; }
+        #endregion Settings
     }
 }

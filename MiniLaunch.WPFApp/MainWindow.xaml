@@ -7,7 +7,7 @@
         xmlns:settings="clr-namespace:MiniLaunch.WPFApp.Properties"
         mc:Ignorable="d"
         Title="DDO MiniLaunch"
-        MinHeight="210" MinWidth="300"
+        MinHeight="220" MinWidth="300"
         Height="{Binding MainHeight, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
         Width="{Binding MainWidth, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
         Top="{Binding MainTop, Source={x:Static settings:Settings.Default}, Mode=TwoWay}"
@@ -62,8 +62,8 @@
                     <RowDefinition Height="20" />
                     <RowDefinition Height="25" />
                     <RowDefinition Height="25" />
-                    <RowDefinition Height="*" />
                     <RowDefinition Height="25" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
@@ -85,6 +85,7 @@
                 </Grid>
                 <CheckBox Grid.Row="2" Content="Use 64-bit game client" VerticalAlignment="Center" x:Name="Use64BitCheckBox" IsChecked="{Binding Use64Bit}" Click="Use64BitCheckBox_Click" />
                 <CheckBox Grid.Row="3" Content="Enable preview (Lamannia)" VerticalAlignment="Center" x:Name="EnablePreviewCheckBox" IsChecked="{Binding EnablePreview}" Click="EnablePreviewCheckBox_Click" />
+                <CheckBox Grid.Row="4" Content="Check for updates at startup" VerticalAlignment="Center" x:Name="CheckUpdateCheckBox" IsChecked="{Binding CheckUpdateAtStartup}" Click="CheckUpdateCheckBox_Click" />
             </Grid>
         </TabItem>
         <TabItem x:Name="AboutTab" Header="About">

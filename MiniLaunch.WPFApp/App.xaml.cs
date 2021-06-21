@@ -35,25 +35,20 @@ namespace MiniLaunch.WPFApp
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await UpdateApp(false);
+            Configuration = await LoadConfig();
+
+            if (Configuration.CheckUpdateAtStartup)
+            {
+                await UpdateApp(false);
+            }
 
             var getServerInfoTask = GetServerInfo();
             var getLauncherConfigTask = GetLauncherConfig();
             var ensureDatabaseCreatedTask = EnsureDatabaseCreated();
-            var loadConfigTask = LoadConfig();
 
             await ensureDatabaseCreatedTask;
-            Configuration = await loadConfigTask;
 
-            if (Configuration.EnablePreview)
-            {
-                ServerInfo = (await getServerInfoTask).Concat(await GetServerInfo(true)).ToList();
-            }
-            else
-            {
-                ServerInfo = await getServerInfoTask;
-            }
-
+            ServerInfo = Configuration.EnablePreview ? (await getServerInfoTask).Concat(await GetServerInfo(true)).ToList() : await getServerInfoTask;
             LauncherConfig = await getLauncherConfigTask;
 
             var mainWindow = new MainWindow();

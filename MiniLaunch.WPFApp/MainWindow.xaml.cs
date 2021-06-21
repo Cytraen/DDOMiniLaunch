@@ -105,6 +105,11 @@ namespace MiniLaunch.WPFApp
             MessageBox.Show("You must restart DDOMiniLaunch for this change to take effect.");
         }
 
+        private async void CheckUpdateCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            await App.SaveConfig();
+        }
+
         private void Window_LocationChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.Save();
@@ -228,6 +233,12 @@ namespace MiniLaunch.WPFApp
             var ticket = loginResponse.LoginAccountResult.Ticket;
 
             var worldStatus = await App.SoapClient.GetDatacenterStatus(serverInfo.ServerStatusUrl, serverInfo.IsPreview);
+
+            if (worldStatus.allow_billing_role == "TurbineEmployee")
+            {
+                MessageBox.Show(serverInfo.Name + " is not available.");
+                return;
+            }
 
             var args = App.LauncherConfig["GameClient.WIN32.ArgTemplate"]
                 .Replace("{SUBSCRIPTION}", subscriptionId)
