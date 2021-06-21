@@ -48,7 +48,7 @@ namespace MiniLaunch.WPFApp
                 && ServerDropdown.SelectedItem is not null;
         }
 
-        private string GetGameDirectory()
+        private static string GetGameDirectory()
         {
             var launcherFileDialog = new OpenFileDialog
             {
@@ -69,7 +69,7 @@ namespace MiniLaunch.WPFApp
         private void AddAccountButton_Click(object sender, RoutedEventArgs e)
         {
             var newAccountWindow = new NewAccountWindow();
-            newAccountWindow.ShowDialog();
+            _ = newAccountWindow.ShowDialog();
             AccountListBox.ItemsSource = Database.GetSubscriptions().GetAwaiter().GetResult();
             AccountListBox.Items.Refresh();
         }
@@ -102,7 +102,7 @@ namespace MiniLaunch.WPFApp
         private async void EnablePreviewCheckBox_Click(object sender, RoutedEventArgs e)
         {
             await App.SaveConfig();
-            MessageBox.Show("You must restart DDOMiniLaunch for this change to take effect.");
+            _ = MessageBox.Show("You must restart DDOMiniLaunch for this change to take effect.");
         }
 
         private async void CheckUpdateCheckBox_Click(object sender, RoutedEventArgs e)
@@ -120,7 +120,7 @@ namespace MiniLaunch.WPFApp
             Properties.Settings.Default.Save();
         }
 
-        private void ChangeGameDirButton_Click(object sender, RoutedEventArgs e)
+        private async void ChangeGameDirButton_Click(object sender, RoutedEventArgs e)
         {
             var dir = GetGameDirectory();
 
@@ -128,11 +128,11 @@ namespace MiniLaunch.WPFApp
             {
                 App.Configuration.GameDirectory = dir;
                 GameDirTextBox.Text = dir;
-                App.SaveConfig();
+                await App.SaveConfig();
             }
         }
 
-        private void ChangePreviewGameDirButton_Click(object sender, RoutedEventArgs e)
+        private async void ChangePreviewGameDirButton_Click(object sender, RoutedEventArgs e)
         {
             var dir = GetGameDirectory();
 
@@ -140,7 +140,7 @@ namespace MiniLaunch.WPFApp
             {
                 App.Configuration.PreviewGameDirectory = dir;
                 PreviewGameDirTextBox.Text = dir;
-                App.SaveConfig();
+                await App.SaveConfig();
             }
         }
 
@@ -167,7 +167,7 @@ namespace MiniLaunch.WPFApp
             await App.UpdateApp(true);
         }
 
-        private void CheckAssignGameDirectory(ref string directory, string defaultDir, out bool changed)
+        private static void CheckAssignGameDirectory(ref string directory, string defaultDir, out bool changed)
         {
             if (!string.IsNullOrWhiteSpace(directory))
             {

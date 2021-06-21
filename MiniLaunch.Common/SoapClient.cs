@@ -39,7 +39,7 @@ namespace MiniLaunch.Common
             return _httpClient.SendAsync(requestMsg);
         }
 
-        private T DeserializeResponse<T>(string responseContent)
+        private static T DeserializeResponse<T>(string responseContent)
         {
             const string soapHeader = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><soap:Body>";
             const string soapFooter = "</soap:Body></soap:Envelope>";
