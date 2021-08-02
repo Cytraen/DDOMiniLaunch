@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -164,7 +165,14 @@ namespace MiniLaunch.WPFApp
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            await App.UpdateApp(true);
+            try
+            {
+                await App.UpdateApp(true);
+            }
+            catch (Exception ex) when (ex is HttpRequestException)
+            {
+                MessageBox.Show("Update server is unreachable.", "Update Check Failed - DDOMiniLaunch");
+            }
         }
 
         private static void CheckAssignGameDirectory(ref string directory, string defaultDir, out bool changed)

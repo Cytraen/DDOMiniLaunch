@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,7 +40,14 @@ namespace MiniLaunch.WPFApp
 
             if (Configuration.CheckUpdateAtStartup)
             {
-                await UpdateApp(false);
+                try
+                {
+                    await UpdateApp(true);
+                }
+                catch (Exception ex) when (ex is HttpRequestException)
+                {
+                    // ignored
+                }
             }
 
             var getServerInfoTask = GetServerInfo();
@@ -57,7 +65,14 @@ namespace MiniLaunch.WPFApp
 
         internal static Task UpdateApp(bool shouldWarn)
         {
-            return UpdateClient.CheckAndDownloadUpdate(typeof(App).Assembly.GetName().Version, shouldWarn);
+            try
+            {
+                return UpdateClient.CheckAndDownloadUpdate(typeof(App).Assembly.GetName().Version, shouldWarn);
+            }
+            catch (Exception ex) when (ex is HttpRequestException)
+            {
+                throw;
+            }
         }
 
         private static async Task<List<ServerInfo>> GetServerInfo(bool preview = false)
